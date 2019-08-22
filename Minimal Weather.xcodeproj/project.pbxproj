@@ -12,6 +12,8 @@
 		116DBFE5230E74AF00354DF9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 116DBFE3230E74AF00354DF9 /* Main.storyboard */; };
 		116DBFE7230E74B000354DF9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 116DBFE6230E74B000354DF9 /* Assets.xcassets */; };
 		116DBFEA230E74B000354DF9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 116DBFE8230E74B000354DF9 /* LaunchScreen.storyboard */; };
+		116DBFF8230E758700354DF9 /* WeatherDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFF7230E758700354DF9 /* WeatherDataModel.swift */; };
+		116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFA230E771C00354DF9 /* URL+Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		116DBFE6230E74B000354DF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		116DBFE9230E74B000354DF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		116DBFEB230E74B000354DF9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		116DBFF7230E758700354DF9 /* WeatherDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataModel.swift; sourceTree = "<group>"; };
+		116DBFFA230E771C00354DF9 /* URL+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Helpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +58,64 @@
 		116DBFDE230E74AF00354DF9 /* Minimal Weather */ = {
 			isa = PBXGroup;
 			children = (
-				116DBFDF230E74AF00354DF9 /* AppDelegate.swift */,
-				116DBFE1230E74AF00354DF9 /* ViewController.swift */,
-				116DBFE3230E74AF00354DF9 /* Main.storyboard */,
-				116DBFE6230E74B000354DF9 /* Assets.xcassets */,
+				116DBFF3230E74CF00354DF9 /* Controller */,
+				116DBFF4230E74D600354DF9 /* Delegate */,
 				116DBFE8230E74B000354DF9 /* LaunchScreen.storyboard */,
-				116DBFEB230E74B000354DF9 /* Info.plist */,
+				116DBFE3230E74AF00354DF9 /* Main.storyboard */,
+				116DBFF1230E74C200354DF9 /* Model */,
+				116DBFF5230E74E300354DF9 /* Supporting Files */,
+				116DBFF2230E74CA00354DF9 /* View */,
 			);
 			path = "Minimal Weather";
+			sourceTree = "<group>";
+		};
+		116DBFF1230E74C200354DF9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				116DBFF7230E758700354DF9 /* WeatherDataModel.swift */,
+				116DBFF9230E770A00354DF9 /* Helpers */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		116DBFF2230E74CA00354DF9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		116DBFF3230E74CF00354DF9 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				116DBFE1230E74AF00354DF9 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		116DBFF4230E74D600354DF9 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				116DBFDF230E74AF00354DF9 /* AppDelegate.swift */,
+			);
+			path = "\U0010Delegate";
+			sourceTree = "<group>";
+		};
+		116DBFF5230E74E300354DF9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				116DBFE6230E74B000354DF9 /* Assets.xcassets */,
+				116DBFEB230E74B000354DF9 /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		116DBFF9230E770A00354DF9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				116DBFFA230E771C00354DF9 /* URL+Helpers.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,7 +190,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				116DBFE2230E74AF00354DF9 /* ViewController.swift in Sources */,
+				116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */,
 				116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */,
+				116DBFF8230E758700354DF9 /* WeatherDataModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,7 +340,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J4YKX6D8P7;
-				INFOPLIST_FILE = "Minimal Weather/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Minimal Weather/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,7 +358,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J4YKX6D8P7;
-				INFOPLIST_FILE = "Minimal Weather/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Minimal Weather/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
