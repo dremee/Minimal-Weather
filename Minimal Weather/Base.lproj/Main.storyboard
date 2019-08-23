@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main Weather View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Minimal_Weather" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainWeatherViewController" customModule="Minimal_Weather" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,6 +33,13 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Eh5-M7-Ya9">
                                 <rect key="frame" x="197" y="438" width="20" height="20"/>
                             </activityIndicatorView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gPS-ek-Rkr">
+                                <rect key="frame" x="306" y="44" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="21h-kC-N7u"/>
+                                    <constraint firstAttribute="width" constant="100" id="bnr-Ds-JT3"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -40,7 +47,9 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6mn-LY-Osz" secondAttribute="trailing" constant="20" id="914-yD-Cza"/>
                             <constraint firstItem="rEk-Q0-pFC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="HZ4-Yl-F1n"/>
                             <constraint firstItem="6mn-LY-Osz" firstAttribute="top" secondItem="rEk-Q0-pFC" secondAttribute="bottom" constant="20" id="Njt-he-6xS"/>
+                            <constraint firstItem="gPS-ek-Rkr" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="S1I-Op-5Wa"/>
                             <constraint firstItem="Eh5-M7-Ya9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="W9x-lw-AZ0"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="gPS-ek-Rkr" secondAttribute="trailing" constant="8" id="adJ-bo-Nf9"/>
                             <constraint firstItem="rEk-Q0-pFC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="cdo-lE-iVB"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rEk-Q0-pFC" secondAttribute="trailing" constant="20" id="hwI-P4-aK2"/>
                             <constraint firstItem="6mn-LY-Osz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="sXX-Xd-vVx"/>
@@ -50,11 +59,13 @@
                     <connections>
                         <outlet property="activityIndicatorView" destination="Eh5-M7-Ya9" id="hv4-Xh-84N"/>
                         <outlet property="cityLabel" destination="rEk-Q0-pFC" id="Uuq-fI-g8R"/>
+                        <outlet property="logoImageView" destination="gPS-ek-Rkr" id="cgW-bG-nVp"/>
                         <outlet property="tempLabel" destination="6mn-LY-Osz" id="Ifi-uE-Jdz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="50.724637681159422" y="20.758928571428569"/>
         </scene>
     </scenes>
 </document>

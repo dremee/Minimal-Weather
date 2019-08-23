@@ -9,16 +9,19 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class MainWeatherViewController: UIViewController {
     //MARK: - Properties
     fileprivate var locationManager = CLLocationManager()
     fileprivate var latitude: String = ""
     fileprivate var longitude: String = ""
+    //MARK: - Networking
+    fileprivate let weatherInfoController = WeatherInfoController()
     
     //MARK: - Outlets
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    @IBOutlet weak var logoImageView: UIImageView!
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +31,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     //MARK: - Actions
     
+
+    
+    //MARK: - Helpers
+    fileprivate func updateUI() {
+        activityIndicatorView.startAnimating()
+        tempLabel.text = ""
+        cityLabel.text = ""
+    }
+}
+
+extension MainWeatherViewController: CLLocationManagerDelegate {
     //MARK: - Location Manager
     func initLocationManager() {
         locationManager.delegate = self
@@ -44,30 +58,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             longitude = String(location.coordinate.longitude)
             
             let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            let weatherURL = URL(string: "https://api.openweathermap.org/data/2.5/weather")
-            let url = weatherURL?.withQueries(query)
-            let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
-                let jsonDecoder = JSONDecoder()
-                guard let data = data, let weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-                    print("Error with decoding")
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.activityIndicatorView.stopAnimating()
-                    self.activityIndicatorView.isHidden = true
-                    self.cityLabel.text = weatherInfo.city
-                    self.tempLabel.text = String(weatherInfo.main.celsius)
+            weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+                if let weatherInfo = weatherInfo {
+                    self.cityLabel.text = weatherInfo.name
+                    self.tempLabel.text = "\(weatherInfo.main.celsius) ℃"
+                    let imageURL = URL(string: "https://openweathermap.org/img/wn/\(weatherInfo.weather[0].icon)@2x.png")
+                    guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
+                    self.logoImageView.image = UIImage(data: imageData)
+                    print(weatherInfo.weather[0].icon)
                 }
             }
-            task.resume()
         }
     }
     
-    //MARK: - Helpers
-    fileprivate func updateUI() {
-        activityIndicatorView.startAnimating()
-        tempLabel.text = ""
-        cityLabel.text = ""
-    }
 }
-
