@@ -20,24 +20,66 @@ class MainWeatherViewController: UIViewController {
     //MARK: - Outlets
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var localDateLabel: UILabel!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var logoImageView: UIImageView!
+    
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateUI()
+        loadWeather()
         initLocationManager()
     }
     
     //MARK: - Actions
-    
+    @IBAction func findByCity(_ sender: UIButton) {
+        
+        let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: nil)
+        let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
+            self.loadWeather()
+            if let textField = alert?.textFields![0].text!, textField.count > 0 {
+                let query = ["q": textField, "appid": "6ba713b340e3501610cdeb5793382e29"]
+                self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
+                    if let weatherInfo = weatherInfo {
+                        self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name, temp: "\(weatherInfo.main.celsius)")
+                    }
+                })
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
+        
+    }
 
     
     //MARK: - Helpers
-    fileprivate func updateUI() {
-        activityIndicatorView.startAnimating()
+    fileprivate func loadWeather() {
+        logoImageView.isHidden = true
         tempLabel.text = ""
         cityLabel.text = ""
+        localDateLabel.text = ""
+        activityIndicatorView.startAnimating()
+    }
+    
+    fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: String) {
+        self.activityIndicatorView.stopAnimating()
+        self.activityIndicatorView.isHidden = true
+        localDateLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
+        cityLabel.text = city
+        tempLabel.text = "\(temp) ℃"
+        let imageURL = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png")
+        DispatchQueue.global(qos: .background).async {
+            guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
+            DispatchQueue.main.async {
+                self.logoImageView.isHidden = false
+                self.logoImageView.image = UIImage(data: imageData)
+            }
+            
+        }
+        
     }
 }
 
@@ -60,12 +102,7 @@ extension MainWeatherViewController: CLLocationManagerDelegate {
             let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if let weatherInfo = weatherInfo {
-                    self.cityLabel.text = weatherInfo.name
-                    self.tempLabel.text = "\(weatherInfo.main.celsius) ℃"
-                    let imageURL = URL(string: "https://openweathermap.org/img/wn/\(weatherInfo.weather[0].icon)@2x.png")
-                    guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
-                    self.logoImageView.image = UIImage(data: imageData)
-                    print(weatherInfo.weather[0].icon)
+                    self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name, temp: "\(weatherInfo.main.celsius)")
                 }
             }
         }

@@ -13,7 +13,7 @@ struct WeatherDataModel: Codable {
     let weather: [Weather]
     let main: Main
     let name: String
-    
+    let timezone: Int
 }
 
 
@@ -41,6 +41,7 @@ struct Weather: Codable {
         case icon
     }
 }
+
 
 
 
