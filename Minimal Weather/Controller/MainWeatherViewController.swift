@@ -43,6 +43,10 @@ class MainWeatherViewController: UIViewController {
                 self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
                     if let weatherInfo = weatherInfo {
                         self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name, temp: "\(weatherInfo.main.celsius)")
+                    } else {
+                        DispatchQueue.main.async {
+                            self.cityLabel.text = "City not found, try again!"
+                        }
                     }
                 })
             }

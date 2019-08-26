@@ -16,6 +16,7 @@
 		116DBFF8230E758700354DF9 /* WeatherDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFF7230E758700354DF9 /* WeatherDataModel.swift */; };
 		116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFA230E771C00354DF9 /* URL+Helpers.swift */; };
 		116DBFFE230FD2E800354DF9 /* WeatherInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFD230FD2E800354DF9 /* WeatherInfoController.swift */; };
+		11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		116DBFF7230E758700354DF9 /* WeatherDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataModel.swift; sourceTree = "<group>"; };
 		116DBFFA230E771C00354DF9 /* URL+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Helpers.swift"; sourceTree = "<group>"; };
 		116DBFFD230FD2E800354DF9 /* WeatherInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoController.swift; sourceTree = "<group>"; };
+		11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 		116DBFF3230E74CF00354DF9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */,
 				116DBFE1230E74AF00354DF9 /* MainWeatherViewController.swift */,
 				116DBFFC230FD2A800354DF9 /* Network */,
 			);
@@ -205,6 +208,7 @@
 			files = (
 				116DBFE2230E74AF00354DF9 /* MainWeatherViewController.swift in Sources */,
 				116DBFFE230FD2E800354DF9 /* WeatherInfoController.swift in Sources */,
+				11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */,
 				116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */,
 				116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */,
 				111D927C23114047001E8C13 /* Formatter+Helpers.swift in Sources */,
