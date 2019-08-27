@@ -29,7 +29,9 @@ class CitiesListViewController: UITableViewController {
             let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
                     
                 if let textField = alert?.textFields![0].text!, textField.count > 0 {
-                    let query = ["q": textField, "appid": "6ba713b340e3501610cdeb5793382e29"]
+                    var findCity = textField.replacingOccurrences(of: " ", with: "+")
+                    findCity = findCity.trimmingCharacters(in: .whitespaces)
+                    let query = ["q": findCity, "appid": "6ba713b340e3501610cdeb5793382e29"]
                     self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
                         if let weatherInfo = weatherInfo {
                             self.cityWeatherList.append(weatherInfo)
@@ -93,6 +95,17 @@ class CitiesListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print("Deselected")
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if indexPath.row != 0 {
+            if editingStyle == .delete {
+                print("Deleted")
+                self.cityWeatherList.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+        }
+        
     }
         
     
