@@ -73,7 +73,6 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
-        
         if cityWeatherList.count > 0 {
             let currentView = cityWeatherList[indexPath.row]!
             cell.textLabel?.text = currentView.name
@@ -86,7 +85,6 @@ class CitiesListViewController: UITableViewController {
     }
     //MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        print("select index path: \(indexPath)")
         selectedWeather = cityWeatherList[indexPath.row]
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
@@ -94,18 +92,20 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print("Deselected")
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row == 0 {
+            return false
+        }
+        return true
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if indexPath.row != 0 {
             if editingStyle == .delete {
-                print("Deleted")
                 self.cityWeatherList.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
             }
-        }
-        
     }
         
     
