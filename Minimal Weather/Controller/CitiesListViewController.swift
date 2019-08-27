@@ -21,7 +21,8 @@ class CitiesListViewController: UITableViewController {
         initLocationManager()
     }
     
-    //MARK: - Actions
+    //MARK: - Navigation
+    
     
     //MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -30,10 +31,12 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
-        cell.textLabel?.text = currentView?.name ?? ""
-        if let temp = currentView?.main.celsius {
-            cell.detailTextLabel?.text = "\(temp) ℃"
+        
+        if let currentView = currentView {
+            cell.textLabel?.text = currentView.name
+            cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
         } else {
+            cell.textLabel?.text = "--"
             cell.detailTextLabel?.text = "--"
         }
         return cell

@@ -67,8 +67,8 @@
 				116DBFF1230E74C200354DF9 /* Model */,
 				116DBFF3230E74CF00354DF9 /* Controller */,
 				116DBFF4230E74D600354DF9 /* Delegate */,
-				116DBFE8230E74B000354DF9 /* LaunchScreen.storyboard */,
 				116DBFE3230E74AF00354DF9 /* Main.storyboard */,
+				116DBFE8230E74B000354DF9 /* LaunchScreen.storyboard */,
 				116DBFF5230E74E300354DF9 /* Supporting Files */,
 				116DBFF2230E74CA00354DF9 /* View */,
 			);
