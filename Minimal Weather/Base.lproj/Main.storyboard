@@ -46,27 +46,12 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yXP-sv-mNA">
-                                <rect key="frame" x="312" y="106" width="64" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="64" id="62L-EU-7I3"/>
-                                    <constraint firstAttribute="height" constant="64" id="70s-GM-h4U"/>
-                                </constraints>
-                                <state key="normal" image="icon">
-                                    <attributedString key="attributedTitle"/>
-                                </state>
-                                <connections>
-                                    <action selector="findByCity:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kst-LY-cXr"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Eh5-M7-Ya9" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="48h-hY-8G8"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6mn-LY-Osz" secondAttribute="trailing" constant="20" id="914-yD-Cza"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yXP-sv-mNA" secondAttribute="trailing" constant="38" id="HBd-yQ-qnO"/>
                             <constraint firstItem="rEk-Q0-pFC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="HZ4-Yl-F1n"/>
-                            <constraint firstItem="yXP-sv-mNA" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="18" id="KfX-Aj-fdO"/>
                             <constraint firstItem="6mn-LY-Osz" firstAttribute="top" secondItem="rEk-Q0-pFC" secondAttribute="bottom" constant="20" id="Njt-he-6xS"/>
                             <constraint firstItem="gPS-ek-Rkr" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="S1I-Op-5Wa"/>
                             <constraint firstItem="Eh5-M7-Ya9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="W9x-lw-AZ0"/>
@@ -131,7 +116,13 @@
                             <outlet property="delegate" destination="fGq-UO-aOf" id="D4s-Z3-L6L"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Cities" id="Hck-eB-s2n"/>
+                    <navigationItem key="navigationItem" title="Cities" id="Hck-eB-s2n">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3EB-pA-H1h">
+                            <connections>
+                                <action selector="addCity:" destination="fGq-UO-aOf" id="gzn-SC-MkZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="ShowDetailSegue" id="V1o-Iz-Rqv"/>
                     </connections>
@@ -159,7 +150,4 @@
             <point key="canvasLocation" x="-757.97101449275374" y="20.758928571428569"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="icon" width="64" height="64"/>
-    </resources>
 </document>

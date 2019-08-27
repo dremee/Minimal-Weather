@@ -22,18 +22,51 @@ class CitiesListViewController: UITableViewController {
         initLocationManager()
     }
     
+    //MARK: - Actions
+    @IBAction func addCity(_ sender: Any) {
+            let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
+            alert.addTextField(configurationHandler: nil)
+            let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
+                    
+                if let textField = alert?.textFields![0].text!, textField.count > 0 {
+                    let query = ["q": textField, "appid": "6ba713b340e3501610cdeb5793382e29"]
+                    self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
+                        if let weatherInfo = weatherInfo {
+                            self.cityWeatherList.append(weatherInfo)
+                            self.tableView.reloadData()
+                        } else {
+                            DispatchQueue.main.async {
+                                 self.errorAlert()
+                            }
+                        }
+                    })
+                }
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            present(alert, animated: true)
+    }
+    
+    //error alert
+    fileprivate func errorAlert() {
+        let ac = UIAlertController(title: "Incorrect city", message: "Error with adding city information", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(ac, animated: true)
+    }
+    
     //MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue" {
             if let vc = segue.destination as? MainWeatherViewController {
-                print("Segue is working")
+                vc.currentWeatherInfo = selectedWeather
             }
         }
     }
     
     //MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return cityWeatherList.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -52,6 +85,7 @@ class CitiesListViewController: UITableViewController {
     //MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         print("select index path: \(indexPath)")
+        selectedWeather = cityWeatherList[indexPath.row]
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
     }
@@ -66,7 +100,7 @@ class CitiesListViewController: UITableViewController {
 
 extension CitiesListViewController: CLLocationManagerDelegate {
     
-    fileprivate func initLocationManager() {
+    private func initLocationManager() {
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
