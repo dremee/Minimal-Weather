@@ -33,33 +33,6 @@ class MainWeatherViewController: UIViewController {
             updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: String(currentView.main.celsius))
         }
     }
-    
-    //MARK: - Actions
-//    @IBAction func findByCity(_ sender: UIButton) {
-//
-//        let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
-//        alert.addTextField(configurationHandler: nil)
-//        let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
-//            self.loadWeather()
-//            if let textField = alert?.textFields![0].text!, textField.count > 0 {
-//                let query = ["q": textField, "appid": "6ba713b340e3501610cdeb5793382e29"]
-//                self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
-//                    if let weatherInfo = weatherInfo {
-//                        self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name, temp: "\(weatherInfo.main.celsius)")
-//                    } else {
-//                        DispatchQueue.main.async {
-//                            self.cityLabel.text = "City not found, try again!"
-//                        }
-//                    }
-//                })
-//            }
-//        }
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-//        alert.addAction(okAction)
-//        alert.addAction(cancelAction)
-//        present(alert, animated: true)
-//
-//    }
 
     
     //MARK: - Helpers
@@ -90,29 +63,3 @@ class MainWeatherViewController: UIViewController {
     }
 }
 
-//extension MainWeatherViewController: CLLocationManagerDelegate {
-//    //MARK: - Location Manager
-//    func initLocationManager() {
-//        locationManager.delegate = self
-//        locationManager.requestAlwaysAuthorization()
-//        locationManager.startUpdatingLocation()
-//    }
-//
-//    //Location manager delegate
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        let location = locations[locations.count - 1]
-//        if location.horizontalAccuracy > 0 {
-//            locationManager.stopUpdatingLocation()
-//            latitude = String(location.coordinate.latitude)
-//            longitude = String(location.coordinate.longitude)
-//
-//            let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
-//            weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
-//                if let weatherInfo = weatherInfo {
-//                    self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name, temp: "\(weatherInfo.main.celsius)")
-//                }
-//            }
-//        }
-//    }
-//
-//}

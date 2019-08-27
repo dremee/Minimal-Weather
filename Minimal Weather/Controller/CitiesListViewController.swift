@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 import CoreLocation
 
 class CitiesListViewController: UITableViewController {
@@ -14,12 +15,14 @@ class CitiesListViewController: UITableViewController {
     fileprivate let locationManager = CLLocationManager()
     fileprivate var weatherInfoController = WeatherInfoController()
     fileprivate var selectedWeather: WeatherDataModel?
-    fileprivate var cityWeatherList = [WeatherDataModel?]()
+    fileprivate var locationWeather: WeatherDataModel?
+    fileprivate var cityWeatherList = [WeatherDataModel]()
     
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         initLocationManager()
+        loadWheatherListCities()
     }
     
     //MARK: - Actions
@@ -35,6 +38,7 @@ class CitiesListViewController: UITableViewController {
                     self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
                         if let weatherInfo = weatherInfo {
                             self.cityWeatherList.append(weatherInfo)
+                            self.saveWeatherListCities()
                             self.tableView.reloadData()
                         } else {
                             DispatchQueue.main.async {
@@ -66,6 +70,40 @@ class CitiesListViewController: UITableViewController {
         }
     }
     
+    //MARK: - File Manager
+    
+    func documentDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    func dataFilePath() -> URL {
+        return documentDirectory().appendingPathComponent("WeatherList.plist")
+    }
+    
+    func saveWeatherListCities() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(cityWeatherList)
+            try data.write(to: dataFilePath(), options: .atomic)
+        } catch  {
+            print("Error encoding cities array: \(error.localizedDescription)")
+        }
+    }
+    
+    func loadWheatherListCities() {
+        let path = dataFilePath()
+        if let data = try? Data(contentsOf: path) {
+            let decoder = PropertyListDecoder()
+            do {
+                cityWeatherList = try decoder.decode([WeatherDataModel].self, from: data)
+            } catch {
+                print("Error decoding city list: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     //MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cityWeatherList.count
@@ -74,7 +112,7 @@ class CitiesListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
         if cityWeatherList.count > 0 {
-            let currentView = cityWeatherList[indexPath.row]!
+            let currentView = cityWeatherList[indexPath.row]
             cell.textLabel?.text = currentView.name
             cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
         } else {
@@ -105,6 +143,7 @@ class CitiesListViewController: UITableViewController {
             if editingStyle == .delete {
                 self.cityWeatherList.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
+                saveWeatherListCities()
             }
     }
         
@@ -130,7 +169,7 @@ extension CitiesListViewController: CLLocationManagerDelegate {
             let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if let weatherInfo = weatherInfo {
-                    self.cityWeatherList.insert(weatherInfo, at: 0)
+                    self.cityWeatherList[0] = weatherInfo
                     self.tableView.reloadData()
                 }
             }
@@ -138,3 +177,4 @@ extension CitiesListViewController: CLLocationManagerDelegate {
     }
     
 }
+
