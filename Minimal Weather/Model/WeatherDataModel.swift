@@ -9,7 +9,7 @@
 import Foundation
 
 struct WeatherDataModel: Codable {
-    
+    let coord: Coord
     let weather: [Weather]
     let main: Main
     let name: String
@@ -40,6 +40,12 @@ struct Weather: Codable {
         case weatherDescription = "description"
         case icon
     }
+}
+
+//MARK: - Coord
+struct Coord: Codable {
+    let lon: Double
+    let lat: Double
 }
 
 

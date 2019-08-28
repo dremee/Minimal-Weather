@@ -15,14 +15,19 @@ class CitiesListViewController: UITableViewController {
     fileprivate let locationManager = CLLocationManager()
     fileprivate var weatherInfoController = WeatherInfoController()
     fileprivate var selectedWeather: WeatherDataModel?
-    fileprivate var locationWeather: WeatherDataModel?
     fileprivate var cityWeatherList = [WeatherDataModel]()
+    fileprivate var latitude: String?
+    fileprivate var longitude: String?
     
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
+        self.navigationItem.leftBarButtonItem = button
+        print(dataFilePath())
         initLocationManager()
         loadWheatherListCities()
+        updateWeather()
     }
     
     //MARK: - Actions
@@ -70,38 +75,26 @@ class CitiesListViewController: UITableViewController {
         }
     }
     
-    //MARK: - File Manager
-    
-    func documentDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-    func dataFilePath() -> URL {
-        return documentDirectory().appendingPathComponent("WeatherList.plist")
-    }
-    
-    func saveWeatherListCities() {
-        let encoder = PropertyListEncoder()
-        
-        do {
-            let data = try encoder.encode(cityWeatherList)
-            try data.write(to: dataFilePath(), options: .atomic)
-        } catch  {
-            print("Error encoding cities array: \(error.localizedDescription)")
-        }
-    }
-    
-    func loadWheatherListCities() {
-        let path = dataFilePath()
-        if let data = try? Data(contentsOf: path) {
-            let decoder = PropertyListDecoder()
-            do {
-                cityWeatherList = try decoder.decode([WeatherDataModel].self, from: data)
-            } catch {
-                print("Error decoding city list: \(error.localizedDescription)")
+    //MARK: - Helper
+    @objc func updateWeather() {
+        for (index, city) in cityWeatherList.enumerated() {
+            self.locationManager.startUpdatingLocation()
+            let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            // search for geolocation data
+            if index != 0 {
+                self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+                    if let weatherInfo = weatherInfo {
+                        self.cityWeatherList[index] = weatherInfo
+                        self.tableView.reloadData()
+                    } else {
+                        self.errorAlert()
+                    }
+                }
             }
+            
         }
+        saveWeatherListCities()
+        tableView.reloadData()
     }
     
     //MARK: - Table view data source
@@ -150,11 +143,13 @@ class CitiesListViewController: UITableViewController {
     
 }
 
+
+//MARK: - Location Manager extension
 extension CitiesListViewController: CLLocationManagerDelegate {
-    
     private func initLocationManager() {
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         locationManager.startUpdatingLocation()
     }
     
@@ -163,18 +158,60 @@ extension CitiesListViewController: CLLocationManagerDelegate {
         let location = locations[locations.count - 1]
         if location.horizontalAccuracy > 0 {
             locationManager.stopUpdatingLocation()
-            let latitude = String(location.coordinate.latitude)
-            let longitude = String(location.coordinate.longitude)
+            latitude = String(location.coordinate.latitude)
+            longitude = String(location.coordinate.longitude)
             
-            let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if let weatherInfo = weatherInfo {
-                    self.cityWeatherList[0] = weatherInfo
+                    if self.cityWeatherList.count == 0 {
+                        self.cityWeatherList.append(weatherInfo)
+                    } else {
+                        self.cityWeatherList[0] = weatherInfo
+                    }
                     self.tableView.reloadData()
                 }
             }
         }
     }
+}
+
+//MARK: - File Manager Extension
+extension CitiesListViewController {
+    // Get directory path
+    func documentDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
     
+    // Get file path
+    func dataFilePath() -> URL {
+        return documentDirectory().appendingPathComponent("WeatherList.plist")
+    }
+    
+    // Save data
+    func saveWeatherListCities() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(cityWeatherList)
+            try data.write(to: dataFilePath(), options: .atomic)
+        } catch  {
+            print("Error encoding cities array: \(error.localizedDescription)")
+        }
+    }
+    
+    // Load data
+    func loadWheatherListCities() {
+        let path = dataFilePath()
+        if let data = try? Data(contentsOf: path) {
+            let decoder = PropertyListDecoder()
+            do {
+                cityWeatherList = try decoder.decode([WeatherDataModel].self, from: data)
+            } catch {
+                print("Error decoding city list: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 

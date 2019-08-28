@@ -15,7 +15,9 @@ struct WeatherInfoController {
         let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
             let jsonDecoder = JSONDecoder()
             guard let data = data, let weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-                print("Error with decoding")
+                if let error = error {
+                    print("Error with decoding network: \(error.localizedDescription)")
+                }
                 completion(nil)
                 return
             }
