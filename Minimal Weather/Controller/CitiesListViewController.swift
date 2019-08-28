@@ -170,8 +170,11 @@ extension CitiesListViewController: CLLocationManagerDelegate {
                         self.cityWeatherList[0] = weatherInfo
                     }
                     let indexPath = IndexPath(row: 0, section: 0)
+                    if let cell = self.tableView.cellForRow(at: indexPath) {
+                        cell.textLabel?.text = weatherInfo.name
+                        cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                    }
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
                 }
             }
         }
