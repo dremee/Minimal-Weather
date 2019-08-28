@@ -18,15 +18,17 @@ class CitiesListViewController: UITableViewController {
     fileprivate var cityWeatherList = [WeatherDataModel]()
     fileprivate var latitude: String?
     fileprivate var longitude: String?
+    fileprivate var fileManager = SaveWeatherData()
     
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
         self.navigationItem.leftBarButtonItem = button
-        print(dataFilePath())
         initLocationManager()
-        loadWheatherListCities()
+        if let data = fileManager.loadWheatherListCities() {
+            cityWeatherList = data
+        }
         updateWeather()
     }
     
@@ -43,7 +45,7 @@ class CitiesListViewController: UITableViewController {
                     self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
                         if let weatherInfo = weatherInfo {
                             self.cityWeatherList.append(weatherInfo)
-                            self.saveWeatherListCities()
+                            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                             self.tableView.reloadData()
                         } else {
                             DispatchQueue.main.async {
@@ -78,7 +80,6 @@ class CitiesListViewController: UITableViewController {
     //MARK: - Helper
     @objc func updateWeather() {
         for (index, city) in cityWeatherList.enumerated() {
-            self.locationManager.startUpdatingLocation()
             let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
             // search for geolocation data
             if index != 0 {
@@ -93,7 +94,7 @@ class CitiesListViewController: UITableViewController {
             }
             
         }
-        saveWeatherListCities()
+        fileManager.saveWeatherListCities(list: cityWeatherList)
         tableView.reloadData()
     }
     
@@ -136,7 +137,7 @@ class CitiesListViewController: UITableViewController {
             if editingStyle == .delete {
                 self.cityWeatherList.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
-                saveWeatherListCities()
+                fileManager.saveWeatherListCities(list: cityWeatherList)
             }
     }
         
@@ -149,7 +150,7 @@ extension CitiesListViewController: CLLocationManagerDelegate {
     private func initLocationManager() {
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         locationManager.startUpdatingLocation()
     }
     
@@ -157,7 +158,6 @@ extension CitiesListViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations[locations.count - 1]
         if location.horizontalAccuracy > 0 {
-            locationManager.stopUpdatingLocation()
             latitude = String(location.coordinate.latitude)
             longitude = String(location.coordinate.longitude)
             
@@ -169,49 +169,13 @@ extension CitiesListViewController: CLLocationManagerDelegate {
                     } else {
                         self.cityWeatherList[0] = weatherInfo
                     }
-                    self.tableView.reloadData()
+                    let indexPath = IndexPath(row: 0, section: 0)
+                    self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+                    self.tableView.reloadRows(at: [indexPath], with: .none)
                 }
             }
         }
     }
 }
 
-//MARK: - File Manager Extension
-extension CitiesListViewController {
-    // Get directory path
-    func documentDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-    // Get file path
-    func dataFilePath() -> URL {
-        return documentDirectory().appendingPathComponent("WeatherList.plist")
-    }
-    
-    // Save data
-    func saveWeatherListCities() {
-        let encoder = PropertyListEncoder()
-        
-        do {
-            let data = try encoder.encode(cityWeatherList)
-            try data.write(to: dataFilePath(), options: .atomic)
-        } catch  {
-            print("Error encoding cities array: \(error.localizedDescription)")
-        }
-    }
-    
-    // Load data
-    func loadWheatherListCities() {
-        let path = dataFilePath()
-        if let data = try? Data(contentsOf: path) {
-            let decoder = PropertyListDecoder()
-            do {
-                cityWeatherList = try decoder.decode([WeatherDataModel].self, from: data)
-            } catch {
-                print("Error decoding city list: \(error.localizedDescription)")
-            }
-        }
-    }
-}
 
