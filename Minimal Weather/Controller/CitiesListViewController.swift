@@ -20,6 +20,7 @@ class CitiesListViewController: UITableViewController {
     fileprivate var longitude: String?
     fileprivate var fileManager = SaveWeatherData()
     
+    fileprivate var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     //view elements
     let button: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
@@ -29,12 +30,27 @@ class CitiesListViewController: UITableViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .notDetermined, .restricted, .denied:
+                locationAuthStatus = .denied
+                print("No access")
+            case .authorizedAlways, .authorizedWhenInUse:
+                locationAuthStatus = .alllow
+                print("Allowed")
+            }
+        }
         self.navigationItem.leftBarButtonItem = button
         initLocationManager()
         if let data = fileManager.loadWheatherListCities() {
             cityWeatherList = data
         }
         updateWeather()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     //MARK: - Actions
@@ -115,10 +131,14 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
-        
-        let currentView = cityWeatherList[indexPath.row]
-        cell.textLabel?.text = currentView.name
-        cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
+        if indexPath.row == 0 && locationAuthStatus == .denied {
+            cell.textLabel?.text = "--"
+            cell.detailTextLabel?.text = "--"
+        } else {
+            let currentView = cityWeatherList[indexPath.row]
+            cell.textLabel?.text = currentView.name
+            cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
+        }
         
         return cell
     }
@@ -134,6 +154,7 @@ class CitiesListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+
         if indexPath.row == 0 {
             return false
         }

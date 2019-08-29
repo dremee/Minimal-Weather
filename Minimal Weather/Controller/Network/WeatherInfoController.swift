@@ -13,11 +13,13 @@ struct WeatherInfoController {
         let weatherURL = URL(string: "https://api.openweathermap.org/data/2.5/weather")
         let url = weatherURL?.withQueries(query)
         let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                return
+            }
             let jsonDecoder = JSONDecoder()
             guard let data = data, let weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-                if let error = error {
-                    print("Error with decoding network: \(error.localizedDescription)")
-                }
+                print("Error with decoding network")
                 completion(nil)
                 return
             }
