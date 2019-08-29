@@ -20,10 +20,15 @@ class CitiesListViewController: UITableViewController {
     fileprivate var longitude: String?
     fileprivate var fileManager = SaveWeatherData()
     
+    //view elements
+    let button: UIBarButtonItem = {
+        let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
+        return button
+    }()
+    
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
         self.navigationItem.leftBarButtonItem = button
         initLocationManager()
         if let data = fileManager.loadWheatherListCities() {
@@ -39,8 +44,8 @@ class CitiesListViewController: UITableViewController {
             let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
                     
                 if let textField = alert?.textFields![0].text!, textField.count > 0 {
-                    var findCity = textField.replacingOccurrences(of: " ", with: "+")
-                    findCity = findCity.trimmingCharacters(in: .whitespaces)
+                    var findCity = textField.trimmingCharacters(in: .whitespaces)
+                    findCity = findCity.replacingOccurrences(of: " ", with: "+")
                     let query = ["q": findCity, "appid": "6ba713b340e3501610cdeb5793382e29"]
                     self.weatherInfoController.fetchWeatherRequestController(query: query, completion: { (weatherInfo) in
                         if let weatherInfo = weatherInfo {
@@ -81,12 +86,17 @@ class CitiesListViewController: UITableViewController {
     @objc func updateWeather() {
         for (index, city) in cityWeatherList.enumerated() {
             let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            // search for geolocation data
+            // update only added cities
             if index != 0 {
                 self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                     if let weatherInfo = weatherInfo {
                         self.cityWeatherList[index] = weatherInfo
-                        self.tableView.reloadData()
+                        let indexPath = IndexPath(row: index, section: 0)
+                        if let cell = self.tableView.cellForRow(at: indexPath) {
+                            cell.textLabel?.text = weatherInfo.name
+                            cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                        }
+                        self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                     } else {
                         self.errorAlert()
                     }
@@ -94,9 +104,9 @@ class CitiesListViewController: UITableViewController {
             }
             
         }
-        fileManager.saveWeatherListCities(list: cityWeatherList)
-        tableView.reloadData()
+        
     }
+    
     
     //MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -105,14 +115,11 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
-        if cityWeatherList.count > 0 {
-            let currentView = cityWeatherList[indexPath.row]
-            cell.textLabel?.text = currentView.name
-            cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
-        } else {
-            cell.textLabel?.text = "--"
-            cell.detailTextLabel?.text = "--"
-        }
+        
+        let currentView = cityWeatherList[indexPath.row]
+        cell.textLabel?.text = currentView.name
+        cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
+        
         return cell
     }
     //MARK: - Table view delegate
@@ -160,19 +167,19 @@ extension CitiesListViewController: CLLocationManagerDelegate {
         if location.horizontalAccuracy > 0 {
             latitude = String(location.coordinate.latitude)
             longitude = String(location.coordinate.longitude)
-            
             let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if let weatherInfo = weatherInfo {
-                    if self.cityWeatherList.count == 0 {
+                    if self.cityWeatherList.isEmpty {
                         self.cityWeatherList.append(weatherInfo)
+                        self.tableView.reloadData()
                     } else {
                         self.cityWeatherList[0] = weatherInfo
-                    }
-                    let indexPath = IndexPath(row: 0, section: 0)
-                    if let cell = self.tableView.cellForRow(at: indexPath) {
-                        cell.textLabel?.text = weatherInfo.name
-                        cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                        let indexPath = IndexPath(row: 0, section: 0)
+                        if let cell = self.tableView.cellForRow(at: indexPath) {
+                            cell.textLabel?.text = weatherInfo.name
+                            cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                        }
                     }
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 }
