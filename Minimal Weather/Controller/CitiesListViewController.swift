@@ -134,6 +134,11 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherViewCell", for: indexPath) as! WeatherViewCell
+        //Change selected view to dark grey
+        let selectedView = UIView()
+        selectedView.backgroundColor = .darkGray
+        cell.selectedBackgroundView = selectedView
+        
         let currentView = cityWeatherList[indexPath.row]
         cell.updateCell(for: currentView)
         return cell
