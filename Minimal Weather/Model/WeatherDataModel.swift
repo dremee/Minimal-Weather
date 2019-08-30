@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 struct WeatherDataModel: Codable {
     let coord: Coord
     let weather: [Weather]

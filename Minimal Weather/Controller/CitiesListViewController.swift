@@ -101,9 +101,9 @@ class CitiesListViewController: UITableViewController {
     //MARK: - Helper
     @objc func updateWeather() {
         for (index, city) in cityWeatherList.enumerated() {
-            let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
             // update only added cities
             if index != 0 {
+                let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
                 self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                     if let weatherInfo = weatherInfo {
                         self.cityWeatherList[index] = weatherInfo
@@ -117,7 +117,7 @@ class CitiesListViewController: UITableViewController {
                         self.errorAlert()
                     }
                 }
-            }
+            } 
             
         }
         
@@ -131,15 +131,9 @@ class CitiesListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
-        if indexPath.row == 0 && locationAuthStatus == .denied {
-            cell.textLabel?.text = "--"
-            cell.detailTextLabel?.text = "--"
-        } else {
-            let currentView = cityWeatherList[indexPath.row]
-            cell.textLabel?.text = currentView.name
-            cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
-        }
-        
+        let currentView = cityWeatherList[indexPath.row]
+        cell.textLabel?.text = currentView.name
+        cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
         return cell
     }
     //MARK: - Table view delegate
@@ -154,10 +148,6 @@ class CitiesListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-
-        if indexPath.row == 0 {
-            return false
-        }
         return true
     }
     
