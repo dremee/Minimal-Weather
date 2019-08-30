@@ -30,6 +30,8 @@ class MainWeatherViewController: UIViewController {
         super.viewDidLoad()
         
         if let currentView = currentWeatherInfo {
+            print(currentView)
+            title = currentView.name
             updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: String(currentView.main.celsius))
         }
     }

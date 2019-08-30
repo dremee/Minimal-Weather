@@ -21,6 +21,7 @@ class CitiesListViewController: UITableViewController {
     fileprivate var fileManager = SaveWeatherData()
     
     fileprivate var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
+    
     //view elements
     let button: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
@@ -30,6 +31,7 @@ class CitiesListViewController: UITableViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.tableFooterView = UIView()
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         if CLLocationManager.locationServicesEnabled() {
