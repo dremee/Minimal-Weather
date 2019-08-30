@@ -22,8 +22,8 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sbV-mm-44M">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wer-t5-wCx">
-                                <rect key="frame" x="8" y="11" width="246" height="65.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="City" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wer-t5-wCx">
+                                <rect key="frame" x="8" y="36" width="246" height="40.5"/>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="22"/>
                                 <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -46,22 +46,32 @@
                                 <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lsb-gs-RBa">
+                                <rect key="frame" x="8" y="11" width="246" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
+                            <constraint firstItem="lsb-gs-RBa" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="8" id="2Qo-kI-elE"/>
+                            <constraint firstItem="lsb-gs-RBa" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="7Oy-Eo-tVS"/>
                             <constraint firstAttribute="trailing" secondItem="FKw-YT-I2Q" secondAttribute="trailing" constant="8" id="7gx-OQ-05X"/>
                             <constraint firstItem="FKw-YT-I2Q" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="QGE-4I-LmT"/>
                             <constraint firstItem="0zt-TI-6F7" firstAttribute="leading" secondItem="Wer-t5-wCx" secondAttribute="trailing" constant="8" id="Wam-E1-tUx"/>
                             <constraint firstAttribute="bottom" secondItem="FKw-YT-I2Q" secondAttribute="bottom" constant="11" id="ZPQ-qF-T8V"/>
                             <constraint firstItem="FKw-YT-I2Q" firstAttribute="leading" secondItem="0zt-TI-6F7" secondAttribute="trailing" id="dly-jA-69Q"/>
                             <constraint firstItem="Wer-t5-wCx" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="8" id="fOU-G0-J6r"/>
+                            <constraint firstItem="Wer-t5-wCx" firstAttribute="top" secondItem="lsb-gs-RBa" secondAttribute="bottom" constant="4" id="fwq-Dn-HPn"/>
+                            <constraint firstItem="0zt-TI-6F7" firstAttribute="leading" secondItem="lsb-gs-RBa" secondAttribute="trailing" constant="8" id="gta-wA-Qaz"/>
                             <constraint firstAttribute="bottom" secondItem="Wer-t5-wCx" secondAttribute="bottom" constant="11" id="hkg-cH-fTQ"/>
                             <constraint firstItem="0zt-TI-6F7" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="iv5-I5-JHs"/>
-                            <constraint firstItem="Wer-t5-wCx" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="lNV-vy-SzZ"/>
                             <constraint firstAttribute="bottom" secondItem="0zt-TI-6F7" secondAttribute="bottom" constant="11" id="su5-ba-Ws7"/>
                         </constraints>
                     </view>
                 </subviews>
+                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
                     <constraint firstItem="sbV-mm-44M" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="0rZ-wE-bqp"/>
                     <constraint firstItem="sbV-mm-44M" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="4Jf-03-L31"/>
@@ -72,7 +82,9 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="cityLabel" destination="Wer-t5-wCx" id="ilg-bK-nif"/>
+                <outlet property="timeLabel" destination="lsb-gs-RBa" id="QIJ-sX-9UW"/>
                 <outlet property="weatherLabel" destination="0zt-TI-6F7" id="89P-My-mcn"/>
+                <outlet property="weatherView" destination="sbV-mm-44M" id="kIW-c2-QQ1"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="113.83928571428571"/>
         </tableViewCell>

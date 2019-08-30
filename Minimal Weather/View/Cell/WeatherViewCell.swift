@@ -10,8 +10,11 @@ import UIKit
 
 class WeatherViewCell: UITableViewCell {
     
+    
+    @IBOutlet weak var weatherView: UIView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var weatherLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,6 +30,7 @@ class WeatherViewCell: UITableViewCell {
     func updateCell(for result: WeatherDataModel) {
         cityLabel.text = result.name
         weatherLabel.text = "\(result.main.celsius)"
+        timeLabel.text = Formatter.changeDateForLocationTime(for: result.timezone)
     }
     
 }

@@ -17,4 +17,13 @@ extension Formatter {
         formatter.dateFormat = "YYYY-MMM-dd, HH:mm"
         return formatter.string(from: date)
     }
+    
+    static func changeDateForLocationTime(for seconds: Int) -> String {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: seconds)
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
+    }
 }
