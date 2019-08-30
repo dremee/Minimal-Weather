@@ -30,6 +30,8 @@ class CitiesListViewController: UITableViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
+        tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
             case .notDetermined, .restricted, .denied:
@@ -108,9 +110,8 @@ class CitiesListViewController: UITableViewController {
                     if let weatherInfo = weatherInfo {
                         self.cityWeatherList[index] = weatherInfo
                         let indexPath = IndexPath(row: index, section: 0)
-                        if let cell = self.tableView.cellForRow(at: indexPath) {
-                            cell.textLabel?.text = weatherInfo.name
-                            cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                        if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
+                            cell.updateCell(for: weatherInfo)
                         }
                         self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                     } else {
@@ -130,10 +131,9 @@ class CitiesListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherViewCell", for: indexPath) as! WeatherViewCell
         let currentView = cityWeatherList[indexPath.row]
-        cell.textLabel?.text = currentView.name
-        cell.detailTextLabel?.text = "\(currentView.main.celsius) ℃"
+        cell.updateCell(for: currentView)
         return cell
     }
     //MARK: - Table view delegate
@@ -187,9 +187,8 @@ extension CitiesListViewController: CLLocationManagerDelegate {
                     } else {
                         self.cityWeatherList[0] = weatherInfo
                         let indexPath = IndexPath(row: 0, section: 0)
-                        if let cell = self.tableView.cellForRow(at: indexPath) {
-                            cell.textLabel?.text = weatherInfo.name
-                            cell.detailTextLabel?.text = "\(weatherInfo.main.celsius) ℃"
+                        if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
+                            cell.updateCell(for: weatherInfo)
                         }
                     }
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)

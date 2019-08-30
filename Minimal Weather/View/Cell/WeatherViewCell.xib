@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="WeatherViewCell" customModule="Minimal_Weather" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="88"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sbV-mm-44M">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wer-t5-wCx">
+                                <rect key="frame" x="8" y="11" width="246" height="65.5"/>
+                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="22"/>
+                                <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0zt-TI-6F7">
+                                <rect key="frame" x="262" y="11" width="30" height="65.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="YxG-TA-6TV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="℃" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FKw-YT-I2Q">
+                                <rect key="frame" x="292" y="11" width="20" height="65.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="ObP-vG-qlv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AppleColorEmoji" family="Apple Color Emoji" pointSize="17"/>
+                                <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="FKw-YT-I2Q" secondAttribute="trailing" constant="8" id="7gx-OQ-05X"/>
+                            <constraint firstItem="FKw-YT-I2Q" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="QGE-4I-LmT"/>
+                            <constraint firstItem="0zt-TI-6F7" firstAttribute="leading" secondItem="Wer-t5-wCx" secondAttribute="trailing" constant="8" id="Wam-E1-tUx"/>
+                            <constraint firstAttribute="bottom" secondItem="FKw-YT-I2Q" secondAttribute="bottom" constant="11" id="ZPQ-qF-T8V"/>
+                            <constraint firstItem="FKw-YT-I2Q" firstAttribute="leading" secondItem="0zt-TI-6F7" secondAttribute="trailing" id="dly-jA-69Q"/>
+                            <constraint firstItem="Wer-t5-wCx" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="8" id="fOU-G0-J6r"/>
+                            <constraint firstAttribute="bottom" secondItem="Wer-t5-wCx" secondAttribute="bottom" constant="11" id="hkg-cH-fTQ"/>
+                            <constraint firstItem="0zt-TI-6F7" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="iv5-I5-JHs"/>
+                            <constraint firstItem="Wer-t5-wCx" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="lNV-vy-SzZ"/>
+                            <constraint firstAttribute="bottom" secondItem="0zt-TI-6F7" secondAttribute="bottom" constant="11" id="su5-ba-Ws7"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="sbV-mm-44M" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="0rZ-wE-bqp"/>
+                    <constraint firstItem="sbV-mm-44M" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="4Jf-03-L31"/>
+                    <constraint firstAttribute="bottom" secondItem="sbV-mm-44M" secondAttribute="bottom" id="B0b-gb-XtE"/>
+                    <constraint firstAttribute="trailing" secondItem="sbV-mm-44M" secondAttribute="trailing" id="IsB-rp-ugN"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="cityLabel" destination="Wer-t5-wCx" id="ilg-bK-nif"/>
+                <outlet property="weatherLabel" destination="0zt-TI-6F7" id="89P-My-mcn"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="113.83928571428571"/>
+        </tableViewCell>
+    </objects>
+</document>
