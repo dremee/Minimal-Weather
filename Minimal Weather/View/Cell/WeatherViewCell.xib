@@ -23,13 +23,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="87.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="City" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wer-t5-wCx">
-                                <rect key="frame" x="8" y="36" width="246" height="40.5"/>
+                                <rect key="frame" x="18" y="36" width="226" height="40.5"/>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="22"/>
                                 <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0zt-TI-6F7">
-                                <rect key="frame" x="262" y="11" width="30" height="65.5"/>
+                                <rect key="frame" x="252" y="11" width="30" height="65.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="YxG-TA-6TV"/>
                                 </constraints>
@@ -38,7 +38,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="℃" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FKw-YT-I2Q">
-                                <rect key="frame" x="292" y="11" width="20" height="65.5"/>
+                                <rect key="frame" x="282" y="11" width="20" height="65.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="20" id="ObP-vG-qlv"/>
                                 </constraints>
@@ -47,7 +47,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lsb-gs-RBa">
-                                <rect key="frame" x="8" y="11" width="246" height="21"/>
+                                <rect key="frame" x="18" y="11" width="226" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.94067454679999996" green="1" blue="0.58534385960000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -55,14 +55,14 @@
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
-                            <constraint firstItem="lsb-gs-RBa" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="8" id="2Qo-kI-elE"/>
+                            <constraint firstItem="lsb-gs-RBa" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="18" id="2Qo-kI-elE"/>
                             <constraint firstItem="lsb-gs-RBa" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="7Oy-Eo-tVS"/>
-                            <constraint firstAttribute="trailing" secondItem="FKw-YT-I2Q" secondAttribute="trailing" constant="8" id="7gx-OQ-05X"/>
+                            <constraint firstAttribute="trailing" secondItem="FKw-YT-I2Q" secondAttribute="trailing" constant="18" id="7gx-OQ-05X"/>
                             <constraint firstItem="FKw-YT-I2Q" firstAttribute="top" secondItem="sbV-mm-44M" secondAttribute="top" constant="11" id="QGE-4I-LmT"/>
                             <constraint firstItem="0zt-TI-6F7" firstAttribute="leading" secondItem="Wer-t5-wCx" secondAttribute="trailing" constant="8" id="Wam-E1-tUx"/>
                             <constraint firstAttribute="bottom" secondItem="FKw-YT-I2Q" secondAttribute="bottom" constant="11" id="ZPQ-qF-T8V"/>
                             <constraint firstItem="FKw-YT-I2Q" firstAttribute="leading" secondItem="0zt-TI-6F7" secondAttribute="trailing" id="dly-jA-69Q"/>
-                            <constraint firstItem="Wer-t5-wCx" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="8" id="fOU-G0-J6r"/>
+                            <constraint firstItem="Wer-t5-wCx" firstAttribute="leading" secondItem="sbV-mm-44M" secondAttribute="leading" constant="18" id="fOU-G0-J6r"/>
                             <constraint firstItem="Wer-t5-wCx" firstAttribute="top" secondItem="lsb-gs-RBa" secondAttribute="bottom" constant="4" id="fwq-Dn-HPn"/>
                             <constraint firstItem="0zt-TI-6F7" firstAttribute="leading" secondItem="lsb-gs-RBa" secondAttribute="trailing" constant="8" id="gta-wA-Qaz"/>
                             <constraint firstAttribute="bottom" secondItem="Wer-t5-wCx" secondAttribute="bottom" constant="11" id="hkg-cH-fTQ"/>

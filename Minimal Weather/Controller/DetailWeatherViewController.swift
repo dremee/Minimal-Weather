@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class MainWeatherViewController: UIViewController {
+class DetailWeatherViewController: UIViewController {
     //MARK: - Properties
     fileprivate var locationManager = CLLocationManager()
     fileprivate var latitude: String = ""

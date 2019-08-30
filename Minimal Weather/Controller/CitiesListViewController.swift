@@ -12,15 +12,15 @@ import CoreLocation
 
 class CitiesListViewController: UITableViewController {
     //MARK: - properties
-    fileprivate let locationManager = CLLocationManager()
-    fileprivate var weatherInfoController = WeatherInfoController()
-    fileprivate var selectedWeather: WeatherDataModel?
-    fileprivate var cityWeatherList = [WeatherDataModel]()
-    fileprivate var latitude: String?
-    fileprivate var longitude: String?
-    fileprivate var fileManager = SaveWeatherData()
+    private let locationManager = CLLocationManager()
+    private var weatherInfoController = WeatherInfoController()
+    private var selectedWeather: WeatherDataModel?
+    private var cityWeatherList = [WeatherDataModel]()
+    private var latitude: String?
+    private var longitude: String?
+    private var fileManager = SaveWeatherData()
     
-    fileprivate var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
+    private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
     //view elements
     let button: UIBarButtonItem = {
@@ -96,7 +96,7 @@ class CitiesListViewController: UITableViewController {
     //MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue" {
-            if let vc = segue.destination as? MainWeatherViewController {
+            if let vc = segue.destination as? DetailWeatherViewController {
                 vc.currentWeatherInfo = selectedWeather
             }
         }
@@ -157,6 +157,9 @@ class CitiesListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row == 0 {
+            return false
+        }
         return true
     }
     
