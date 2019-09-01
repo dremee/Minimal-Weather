@@ -157,7 +157,7 @@ class CitiesListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 {
+        if indexPath.row == 0 && cityWeatherList[0].isLocationSearch {
             return false
         }
         return true
@@ -192,16 +192,22 @@ extension CitiesListViewController: CLLocationManagerDelegate {
             longitude = String(location.coordinate.longitude)
             let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
-                if let weatherInfo = weatherInfo {
-                    if self.cityWeatherList.isEmpty {
+                if var weatherInfo = weatherInfo {
+                    // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
+                    weatherInfo.isLocationSearch = true
+                    if self.cityWeatherList.isEmpty{
                         self.cityWeatherList.append(weatherInfo)
                         self.tableView.reloadData()
-                    } else {
+                    } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
                         self.cityWeatherList[0] = weatherInfo
                         let indexPath = IndexPath(row: 0, section: 0)
                         if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
                             cell.updateCell(for: weatherInfo)
                         }
+                        // if list is not empty and top element not found with location
+                    } else {
+                        self.cityWeatherList.insert(weatherInfo, at: 0)
+                        self.tableView.reloadData()
                     }
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 }

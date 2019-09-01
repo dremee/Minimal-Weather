@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 struct WeatherDataModel: Codable, CustomStringConvertible {
     var description: String {
         return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone)"
@@ -19,6 +18,13 @@ struct WeatherDataModel: Codable, CustomStringConvertible {
     let main: Main
     let name: String
     let timezone: Int
+    // trigger, when searching by location
+    var isLocationSearch: Bool = false
+    
+    enum CodingKeys: String, CodingKey {
+        case coord, weather, main, name, timezone
+    }
+
 }
 
 
@@ -36,7 +42,6 @@ struct Main: Codable {
     var maxCelsius: Int {
         return Int(self.tempMax - 273.3)
     }
-
     
     enum CodingKeys: String, CodingKey {
         case temp
