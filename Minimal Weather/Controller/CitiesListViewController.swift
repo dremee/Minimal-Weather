@@ -22,11 +22,7 @@ class CitiesListViewController: UITableViewController {
     
     private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
-    //view elements
-    let button: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
-        return button
-    }()
+
     
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
@@ -44,7 +40,8 @@ class CitiesListViewController: UITableViewController {
                 print("Allowed")
             }
         }
-        self.navigationItem.leftBarButtonItem = button
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
+        self.navigationItem.leftBarButtonItem = refreshButton
         initLocationManager()
         if let data = fileManager.loadWheatherListCities() {
             cityWeatherList = data
@@ -111,18 +108,15 @@ class CitiesListViewController: UITableViewController {
                 self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                     if let weatherInfo = weatherInfo {
                         self.cityWeatherList[index] = weatherInfo
-                        let indexPath = IndexPath(row: index, section: 0)
-                        if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
-                            cell.updateCell(for: weatherInfo)
-                        }
+                        self.tableView.reloadData()
                         self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                     } else {
                         self.errorAlert()
                     }
                 }
-            } 
-            
+            }
         }
+        print("Update data")
         
     }
     
@@ -168,6 +162,7 @@ class CitiesListViewController: UITableViewController {
                 self.cityWeatherList.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
                 fileManager.saveWeatherListCities(list: cityWeatherList)
+                self.tableView.reloadData()
             }
     }
         
