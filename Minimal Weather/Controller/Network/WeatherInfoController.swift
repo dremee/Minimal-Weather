@@ -18,12 +18,13 @@ struct WeatherInfoController {
                 return
             }
             let jsonDecoder = JSONDecoder()
-            guard let data = data, let weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
+            guard let data = data, var weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
                 print("Error with decoding network")
                 completion(nil)
                 return
             }
             DispatchQueue.main.async {
+                weatherInfo.isLocationSearch = false
                 completion(weatherInfo)
             }
         }

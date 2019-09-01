@@ -189,7 +189,7 @@ extension CitiesListViewController: CLLocationManagerDelegate {
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if var weatherInfo = weatherInfo {
                     // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
-                    weatherInfo.isLocationSearch = true
+                    weatherInfo.isLocationSearch! = true
                     if self.cityWeatherList.isEmpty{
                         self.cityWeatherList.append(weatherInfo)
                         self.tableView.reloadData()
