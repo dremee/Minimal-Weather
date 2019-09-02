@@ -38,14 +38,20 @@ class DetailWeatherViewController: UIViewController {
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             //make timer for auto updating
             DispatchQueue.main.async {
-                self.timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true, block: { (_) in
+                self.timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true, block: { [weak self](_) in
                     print("Updated")
-                    self.updateData()
+                    if let self = self {
+                        self.updateData()
+                    }
+                    
                 })
             }
         }
     }
-
+    
+    deinit {
+        print("Deinit detail vc")
+    }
     
     //MARK: - Helpers
     fileprivate func loadWeather() {
@@ -77,7 +83,8 @@ class DetailWeatherViewController: UIViewController {
         guard let weatherInfo = currentWeatherInfo else {return}
         self.loadWeather()
         let query: [String: String] = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+        self.weatherInfoController.fetchWeatherRequestController(query: query) { [weak self](weatherInfo) in
+            guard let self = self else {return}
             if let currentView = weatherInfo {
                self.currentWeatherInfo = currentView
                self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
