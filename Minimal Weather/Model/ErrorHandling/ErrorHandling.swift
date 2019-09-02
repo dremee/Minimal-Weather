@@ -13,4 +13,13 @@ class ErrorHandling {
         case alllow
         case denied
     }
+    
+    static var networkStatus: NetworkError = .NoError
+    enum NetworkError {
+        case NetworkError
+        case DecodingError
+        case NoError
+    }
 }
+
+

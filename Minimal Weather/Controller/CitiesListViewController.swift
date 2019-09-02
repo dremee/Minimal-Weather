@@ -85,7 +85,20 @@ class CitiesListViewController: UITableViewController {
     
     //error alert
     fileprivate func errorAlert() {
-        let ac = UIAlertController(title: "Incorrect city", message: "Error with adding city information", preferredStyle: .alert)
+        let title: String
+        let message: String
+        switch ErrorHandling.networkStatus {
+        case .DecodingError:
+            title = "Error with city"
+            message = "Error with adding city information"
+        case .NetworkError:
+            title = "Network Error"
+            message = "Problem with get information. It may be problem with internet connection or server was crash"
+        default:
+            title = "All good, it's not appear"
+            message = "It is not appear"
+        }
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(ac, animated: true)
     }
