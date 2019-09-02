@@ -25,7 +25,6 @@ class DetailWeatherViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
     @IBOutlet weak var localDateLabel: UILabel!
-    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var logoImageView: UIImageView!
     
     
@@ -33,16 +32,15 @@ class DetailWeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let currentView = currentWeatherInfo {
-            print(currentView)
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
-            //make timer for auto updating
+            // we turn on location init only when we open location weather information and we need to update it by location latitude and longitude
             if currentView.isLocationSearch {
                 self.locationInit()
             }
+            //make timer for auto updating
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { [weak self](_) in
-                    print("Updated")
                     if let self = self {
                         self.updateData()
                     }
@@ -63,21 +61,16 @@ class DetailWeatherViewController: UIViewController {
     }
     
     //MARK: - Helpers
-    fileprivate func loadWeather() {
-        logoImageView.isHidden = true
-        tempLabel.text = ""
-        cityLabel.text = ""
-        localDateLabel.text = ""
-        activityIndicatorView.startAnimating()
-    }
+ 
     
     fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: Int) {
-        self.activityIndicatorView.stopAnimating()
-        self.activityIndicatorView.isHidden = true
+ 
         localDateLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
         cityLabel.text = city
         tempLabel.text = "\(temp) ℃"
+        //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
         let imageURL = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png")
+        //Get image data in background queue
         DispatchQueue.global(qos: .background).async {
             guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
             DispatchQueue.main.async {
@@ -88,30 +81,33 @@ class DetailWeatherViewController: UIViewController {
     }
     
     @objc func updateData() {
-        print("Reload")
+        //here i'm updating data, when user stay in detail vc
         guard let weatherInfo = currentWeatherInfo else {return}
         var query = [String: String]()
+        // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
         if weatherInfo.isLocationSearch && longitude.count > 0 && latitude.count > 0 {
             query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
         } else if weatherInfo.isLocationSearch {
+            // if location is off, just back user to city list
             self.navigationController?.popViewController(animated: true)
         } else {
+            // else, just update with name.
             query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
         
         self.weatherInfoController.fetchWeatherRequestController(query: query) { [weak self](weatherInfo) in
-            print(query)
+
             guard let self = self else {return}
-            //have to update data, without updating isLocationSearch for control next updating
+            
             if let currentView = weatherInfo {
-                print(currentView)
+                //have to update data, without updating isLocationSearch for control next updating. If i just make currentWeatherLocation = currentView, i lost my isLocationSearch status
                 self.currentWeatherInfo?.coord = currentView.coord
                 self.currentWeatherInfo?.name = currentView.name
                 self.currentWeatherInfo?.main = currentView.main
                 self.currentWeatherInfo?.weather = currentView.weather
                 self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             } else {
-                print("Error")
+                // if user have problem with network, we staying in the current vc and show him last saved information
                 DispatchQueue.main.async {
                     self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name, temp: self.currentWeatherInfo!.main.celsius)
                 }

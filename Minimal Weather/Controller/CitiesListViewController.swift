@@ -34,10 +34,10 @@ class CitiesListViewController: UITableViewController {
             switch CLLocationManager.authorizationStatus() {
             case .notDetermined, .restricted, .denied:
                 locationAuthStatus = .denied
-                print("No access")
+               
             case .authorizedAlways, .authorizedWhenInUse:
                 locationAuthStatus = .alllow
-                print("Allowed")
+              
             }
         }
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
@@ -129,7 +129,7 @@ class CitiesListViewController: UITableViewController {
                 }
             }
         }
-        print("Update data")
+        
         
     }
     
