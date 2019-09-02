@@ -106,19 +106,36 @@ class CitiesListViewController: UIViewController {
     @objc func updateWeather() {
         for (index, city) in cityWeatherList.enumerated() {
             // update only added cities
-            if index != 0 {
-                let query: [String: String] = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-                self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
-                    if let weatherInfo = weatherInfo {
+            var query = [String: String]()
+            // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
+            // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
+            if index == 0 && city.isLocationSearch && locationAuthStatus == .alllow && latitude != nil && longitude != nil {
+                query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            } else if index == 0 && city.isLocationSearch && locationAuthStatus == .denied {
+                //here we check, that location manager is denied. I think, i will delete firs row here
+                continue
+            } else {
+                // in all another situations, we just update with city
+                query = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            }
+            
+            self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+                if let weatherInfo = weatherInfo {
+                    // here i make flag for first row, that found by location
+                    if index == 0 && city.isLocationSearch {
                         self.cityWeatherList[index] = weatherInfo
-                        self.tableView.reloadData()
-                        self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+                        self.cityWeatherList[index].isLocationSearch = true
                     } else {
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                        
+                        self.cityWeatherList[index] = weatherInfo
                     }
+                    
+                    self.tableView.reloadData()
+                    self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+                } else {
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                    
                 }
             }
         }
