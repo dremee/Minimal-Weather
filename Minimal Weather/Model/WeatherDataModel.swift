@@ -12,7 +12,7 @@ import Foundation
 
 struct WeatherDataModel: Codable, CustomStringConvertible {
     var description: String {
-        return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone), isLocationSearch: \(self.isLocationSearch)"
+        return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone), isLocationSearch: \(String(describing: self.isLocationSearch))"
     }
     
     var coord: Coord

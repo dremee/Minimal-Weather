@@ -11,6 +11,7 @@ import UIKit
 class ErrorViewCell: UITableViewCell {
 
     @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var cellView: UIView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -31,6 +32,27 @@ class ErrorViewCell: UITableViewCell {
         default:
             return
         }
+    }
+    
+    func animateShowCell() {
+        let cellHeight: CGFloat = 40
+        transform = CGAffineTransform(translationX: 0, y: 0)
+        alpha = 0
+        UIView.animate(withDuration: 1.6, animations:  {
+            print("I'm work")
+            self.transform = CGAffineTransform(translationX: 0, y: cellHeight)
+            self.alpha = 1
+        }, completion: {_ in
+            UIView.animate(withDuration: 1.6, animations: {
+                print("I'm too")
+                self.transform = CGAffineTransform(translationX: 0, y: 0)
+                self.alpha = 0
+            })
+        } )
+    }
+    
+    func animateEndCell() {
+        
     }
     
 }

@@ -10,8 +10,10 @@ import UIKit
 import Foundation
 import CoreLocation
 
-class CitiesListViewController: UITableViewController {
+class CitiesListViewController: UIViewController {
     //MARK: - properties
+    @IBOutlet weak var tableView: UITableView!
+    
     private let locationManager = CLLocationManager()
     private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
@@ -27,6 +29,8 @@ class CitiesListViewController: UITableViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
         //create footer bar, for not display empty cells
         tableView.tableFooterView = UIView()
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
@@ -44,6 +48,9 @@ class CitiesListViewController: UITableViewController {
         }
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
         self.navigationItem.leftBarButtonItem = refreshButton
+        
+        let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
+        self.navigationItem.rightBarButtonItem = addCityButton
         initLocationManager()
         if let data = fileManager.loadWheatherListCities() {
             cityWeatherList = data
@@ -59,7 +66,7 @@ class CitiesListViewController: UITableViewController {
     }
     
     //MARK: - Actions
-    @IBAction func addCity(_ sender: Any) {
+    @objc func addCity() {
             let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
             alert.addTextField(configurationHandler: nil)
             let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
@@ -119,13 +126,19 @@ class CitiesListViewController: UITableViewController {
         
     }
     
+  
+
+}
+
+//MARK: - TableView Extension
+extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //MARK: - Table view data source
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cityWeatherList.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherViewCell", for: indexPath) as! WeatherViewCell
         //Change selected view to dark grey
         let selectedView = UIView()
@@ -138,54 +151,36 @@ class CitiesListViewController: UITableViewController {
     }
     
     //MARK: - Table view delegate
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         selectedWeather = cityWeatherList[indexPath.row]
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         let cell = tableView.cellForRow(at: indexPath) as? WeatherViewCell
         cell?.weatherView.backgroundColor = .black
     }
     
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if indexPath.row == 0 && cityWeatherList[0].isLocationSearch {
             return false
         }
         return true
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-            if editingStyle == .delete {
-                self.cityWeatherList.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
-                fileManager.saveWeatherListCities(list: cityWeatherList)
-                self.tableView.reloadData()
-            }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.cityWeatherList.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            fileManager.saveWeatherListCities(list: cityWeatherList)
+            self.tableView.reloadData()
+        }
     }
     
-    //Header cell
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if ErrorHandling.networkStatus != .NoError {
-            return 59.5
-        }
-        return 0
-    }
-    
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if ErrorHandling.networkStatus != .NoError {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ErrorViewCell") as? ErrorViewCell
-            cell?.updateLabel()
-            return cell
-        }
-        return nil
-    }
-
-
+    //    Header cell
 }
-
 
 //MARK: - Location Manager extension
 extension CitiesListViewController: CLLocationManagerDelegate {
