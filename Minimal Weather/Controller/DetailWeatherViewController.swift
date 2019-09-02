@@ -28,11 +28,12 @@ class DetailWeatherViewController: UIViewController {
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        loadWeather()
         if let currentView = currentWeatherInfo {
             print(currentView)
             title = currentView.name
-            updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: String(currentView.main.celsius))
+            updateData()
+            updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
         }
     }
 
@@ -46,7 +47,7 @@ class DetailWeatherViewController: UIViewController {
         activityIndicatorView.startAnimating()
     }
     
-    fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: String) {
+    fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: Int) {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.isHidden = true
         localDateLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
@@ -59,9 +60,17 @@ class DetailWeatherViewController: UIViewController {
                 self.logoImageView.isHidden = false
                 self.logoImageView.image = UIImage(data: imageData)
             }
-            
         }
-        
+    }
+    
+    fileprivate func updateData() {
+        guard let weatherInfo = currentWeatherInfo else {return}
+        let query: [String: String] = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+            if let weatherInfo = weatherInfo {
+               self.currentWeatherInfo = weatherInfo
+            }
+        }
     }
 }
 
