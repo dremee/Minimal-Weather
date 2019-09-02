@@ -90,7 +90,6 @@ class DetailWeatherViewController: UIViewController {
     @objc func updateData() {
         print("Reload")
         guard let weatherInfo = currentWeatherInfo else {return}
-        self.loadWeather()
         var query = [String: String]()
         if weatherInfo.isLocationSearch && longitude.count > 0 && latitude.count > 0 {
             query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
@@ -105,13 +104,18 @@ class DetailWeatherViewController: UIViewController {
             guard let self = self else {return}
             //have to update data, without updating isLocationSearch for control next updating
             if let currentView = weatherInfo {
+                print(currentView)
                 self.currentWeatherInfo?.coord = currentView.coord
                 self.currentWeatherInfo?.name = currentView.name
                 self.currentWeatherInfo?.main = currentView.main
                 self.currentWeatherInfo?.weather = currentView.weather
                 self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             } else {
-                self.dismiss(animated: true, completion: nil)
+                print("Error")
+                DispatchQueue.main.async {
+                    self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name, temp: self.currentWeatherInfo!.main.celsius)
+                }
+                
             }
             
         }

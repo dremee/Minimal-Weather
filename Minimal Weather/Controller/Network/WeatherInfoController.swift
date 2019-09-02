@@ -15,6 +15,7 @@ struct WeatherInfoController {
         let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
             if let error = error {
                 print("Network error: \(error.localizedDescription)")
+                completion(nil)
                 return
             }
             let jsonDecoder = JSONDecoder()
