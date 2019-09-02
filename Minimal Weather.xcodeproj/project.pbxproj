@@ -53,13 +53,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1119F8D123192B0700FD739B /* Cell */ = {
+		1119F8D123192B0700FD739B /* CityListCell */ = {
 			isa = PBXGroup;
 			children = (
 				1119F8D223192B3100FD739B /* WeatherViewCell.swift */,
 				1119F8D323192B3100FD739B /* WeatherViewCell.xib */,
 			);
-			path = Cell;
+			path = CityListCell;
 			sourceTree = "<group>";
 		};
 		113D467D2317CF9500C84495 /* ErrorHandling */ = {
@@ -122,7 +122,7 @@
 		116DBFF2230E74CA00354DF9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				1119F8D123192B0700FD739B /* Cell */,
+				1119F8D123192B0700FD739B /* CityListCell */,
 			);
 			path = View;
 			sourceTree = "<group>";
