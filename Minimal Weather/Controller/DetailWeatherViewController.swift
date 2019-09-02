@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 import CoreLocation
 
 class DetailWeatherViewController: UIViewController {
@@ -15,6 +16,8 @@ class DetailWeatherViewController: UIViewController {
     fileprivate var latitude: String = ""
     fileprivate var longitude: String = ""
     var currentWeatherInfo: WeatherDataModel?
+    var timer = Timer()
+    
     //MARK: - Networking
     fileprivate let weatherInfoController = WeatherInfoController()
     
@@ -25,15 +28,21 @@ class DetailWeatherViewController: UIViewController {
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var logoImageView: UIImageView!
     
+    
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadWeather()
         if let currentView = currentWeatherInfo {
             print(currentView)
             title = currentView.name
-            updateData()
-            updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+            self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+            //make timer for auto updating
+            DispatchQueue.main.async {
+                self.timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true, block: { (_) in
+                    print("Updated")
+                    self.updateData()
+                })
+            }
         }
     }
 
@@ -63,12 +72,15 @@ class DetailWeatherViewController: UIViewController {
         }
     }
     
-    fileprivate func updateData() {
+    @objc func updateData() {
+        print("Reload")
         guard let weatherInfo = currentWeatherInfo else {return}
+        self.loadWeather()
         let query: [String: String] = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
-            if let weatherInfo = weatherInfo {
-               self.currentWeatherInfo = weatherInfo
+            if let currentView = weatherInfo {
+               self.currentWeatherInfo = currentView
+               self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             }
         }
     }
