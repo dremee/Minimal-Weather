@@ -15,11 +15,11 @@ struct WeatherDataModel: Codable, CustomStringConvertible {
         return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone), isLocationSearch: \(self.isLocationSearch)"
     }
     
-    let coord: Coord
-    let weather: [Weather]
-    let main: Main
-    let name: String
-    let timezone: Int
+    var coord: Coord
+    var weather: [Weather]
+    var main: Main
+    var name: String
+    var timezone: Int
     // trigger, when searching by location.
     var isLocationSearch: Bool! = false
     

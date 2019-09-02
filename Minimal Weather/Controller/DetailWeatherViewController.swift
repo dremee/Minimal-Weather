@@ -37,8 +37,11 @@ class DetailWeatherViewController: UIViewController {
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             //make timer for auto updating
+            if currentView.isLocationSearch {
+                self.locationInit()
+            }
             DispatchQueue.main.async {
-                self.timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true, block: { [weak self](_) in
+                self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { [weak self](_) in
                     print("Updated")
                     if let self = self {
                         self.updateData()
@@ -47,6 +50,12 @@ class DetailWeatherViewController: UIViewController {
                 })
             }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //destroy timer
+        timer.invalidate()
     }
     
     deinit {
@@ -82,14 +91,48 @@ class DetailWeatherViewController: UIViewController {
         print("Reload")
         guard let weatherInfo = currentWeatherInfo else {return}
         self.loadWeather()
-        let query: [String: String] = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        var query = [String: String]()
+        if weatherInfo.isLocationSearch && longitude.count > 0 && latitude.count > 0 {
+            query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        } else if weatherInfo.isLocationSearch {
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        }
+        
         self.weatherInfoController.fetchWeatherRequestController(query: query) { [weak self](weatherInfo) in
+            print(query)
             guard let self = self else {return}
+            //have to update data, without updating isLocationSearch for control next updating
             if let currentView = weatherInfo {
-               self.currentWeatherInfo = currentView
-               self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+                self.currentWeatherInfo?.coord = currentView.coord
+                self.currentWeatherInfo?.name = currentView.name
+                self.currentWeatherInfo?.main = currentView.main
+                self.currentWeatherInfo?.weather = currentView.weather
+                self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+            } else {
+                self.dismiss(animated: true, completion: nil)
             }
+            
         }
     }
 }
 
+extension DetailWeatherViewController: CLLocationManagerDelegate {
+    // Initialize loction manager when city was found by geolocation data
+    func locationInit() {
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+        locationManager.startUpdatingLocation()
+    }
+    
+    // just update latitude and longitude
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations[locations.count - 1]
+        if location.horizontalAccuracy > 0 {
+            latitude = String(location.coordinate.latitude)
+            longitude = String(location.coordinate.longitude)
+        }
+    }
+}
