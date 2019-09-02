@@ -27,17 +27,19 @@ class CitiesListViewController: UITableViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        //create footer bar, for not display empty cells
         tableView.tableFooterView = UIView()
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
+        let errorCellNib = UINib(nibName: "ErrorViewCell", bundle: nil)
+        tableView.register(errorCellNib, forCellReuseIdentifier: "ErrorViewCell")
+        
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
             case .notDetermined, .restricted, .denied:
                 locationAuthStatus = .denied
-               
             case .authorizedAlways, .authorizedWhenInUse:
                 locationAuthStatus = .alllow
-              
             }
         }
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
@@ -47,6 +49,8 @@ class CitiesListViewController: UITableViewController {
             cityWeatherList = data
         }
         updateWeather()
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,8 +75,7 @@ class CitiesListViewController: UITableViewController {
                             self.tableView.reloadData()
                         } else {
                             DispatchQueue.main.async {
-                                 self.errorAlert()
-                            }
+                                 self.tableView.reloadData()                            }
                         }
                     })
                 }
@@ -81,26 +84,6 @@ class CitiesListViewController: UITableViewController {
             alert.addAction(okAction)
             alert.addAction(cancelAction)
             present(alert, animated: true)
-    }
-    
-    //error alert
-    fileprivate func errorAlert() {
-        let title: String
-        let message: String
-        switch ErrorHandling.networkStatus {
-        case .DecodingError:
-            title = "Error with city"
-            message = "Error with adding city information"
-        case .NetworkError:
-            title = "Network Error"
-            message = "Problem with get information. It may be problem with internet connection or server was crash"
-        default:
-            title = "All good, it's not appear"
-            message = "It is not appear"
-        }
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(ac, animated: true)
     }
     
     //MARK: - Navigation
@@ -124,7 +107,10 @@ class CitiesListViewController: UITableViewController {
                         self.tableView.reloadData()
                         self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                     } else {
-                        self.errorAlert()
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                        
                     }
                 }
             }
@@ -150,6 +136,7 @@ class CitiesListViewController: UITableViewController {
         cell.updateCell(for: currentView)
         return cell
     }
+    
     //MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         selectedWeather = cityWeatherList[indexPath.row]
@@ -178,8 +165,25 @@ class CitiesListViewController: UITableViewController {
                 self.tableView.reloadData()
             }
     }
-        
     
+    //Header cell
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if ErrorHandling.networkStatus != .NoError {
+            return 59.5
+        }
+        return 0
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if ErrorHandling.networkStatus != .NoError {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ErrorViewCell") as? ErrorViewCell
+            cell?.updateLabel()
+            return cell
+        }
+        return nil
+    }
+
+
 }
 
 

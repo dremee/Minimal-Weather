@@ -21,6 +21,8 @@
 		116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFA230E771C00354DF9 /* URL+Helpers.swift */; };
 		116DBFFE230FD2E800354DF9 /* WeatherInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFD230FD2E800354DF9 /* WeatherInfoController.swift */; };
 		11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */; };
+		11E04483231D3E08008B242F /* ErrorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E04481231D3E08008B242F /* ErrorViewCell.swift */; };
+		11E04484231D3E08008B242F /* ErrorViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11E04482231D3E08008B242F /* ErrorViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,8 @@
 		116DBFFA230E771C00354DF9 /* URL+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Helpers.swift"; sourceTree = "<group>"; };
 		116DBFFD230FD2E800354DF9 /* WeatherInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoController.swift; sourceTree = "<group>"; };
 		11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesListViewController.swift; sourceTree = "<group>"; };
+		11E04481231D3E08008B242F /* ErrorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorViewCell.swift; sourceTree = "<group>"; };
+		11E04482231D3E08008B242F /* ErrorViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,8 @@
 			children = (
 				1119F8D223192B3100FD739B /* WeatherViewCell.swift */,
 				1119F8D323192B3100FD739B /* WeatherViewCell.xib */,
+				11E04481231D3E08008B242F /* ErrorViewCell.swift */,
+				11E04482231D3E08008B242F /* ErrorViewCell.xib */,
 			);
 			path = CityListCell;
 			sourceTree = "<group>";
@@ -231,6 +237,7 @@
 			files = (
 				116DBFEA230E74B000354DF9 /* LaunchScreen.storyboard in Resources */,
 				116DBFE7230E74B000354DF9 /* Assets.xcassets in Resources */,
+				11E04484231D3E08008B242F /* ErrorViewCell.xib in Resources */,
 				116DBFE5230E74AF00354DF9 /* Main.storyboard in Resources */,
 				1119F8D523192B3100FD739B /* WeatherViewCell.xib in Resources */,
 			);
@@ -245,6 +252,7 @@
 			files = (
 				113D467F2317CFB400C84495 /* ErrorHandling.swift in Sources */,
 				116DBFE2230E74AF00354DF9 /* DetailWeatherViewController.swift in Sources */,
+				11E04483231D3E08008B242F /* ErrorViewCell.swift in Sources */,
 				114D50AF2316B04B00AEBD20 /* SaveWeatherData.swift in Sources */,
 				1119F8D423192B3100FD739B /* WeatherViewCell.swift in Sources */,
 				116DBFFE230FD2E800354DF9 /* WeatherInfoController.swift in Sources */,
