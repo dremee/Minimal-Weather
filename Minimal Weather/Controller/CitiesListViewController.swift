@@ -24,7 +24,20 @@ class CitiesListViewController: UIViewController {
     
     private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
-
+    // add subview
+    let errorView: ErrorView = {
+        let view = ErrorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private func setupErrorView() {
+        view.addSubview(errorView)
+        NSLayoutConstraint.activate([
+            errorView.topAnchor.constraint(equalTo: view.topAnchor, constant: (self.navigationController?.navigationBar.frame.size.height)!),
+            errorView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            errorView.heightAnchor.constraint(equalToConstant: 40)
+            ])
+    }
     
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
@@ -56,7 +69,7 @@ class CitiesListViewController: UIViewController {
             cityWeatherList = data
         }
         updateWeather()
-        
+        setupErrorView()
         
     }
     
