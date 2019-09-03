@@ -9,7 +9,7 @@
 import UIKit
 
 class ErrorView: UIView {
-
+    private var topConstraint: NSLayoutConstraint?
     private var errorView: UIView = {
         let view = UIView()
         view.backgroundColor = .red
@@ -17,16 +17,11 @@ class ErrorView: UIView {
         return view
     }()
     
+    var isAnimationRunning = false
+    
     private var errorLabel: UILabel = {
         let label = UILabel()
-        switch ErrorHandling.networkStatus {
-        case .NetworkError:
-            label.text = "Network Error"
-        case .DecodingError:
-            label.text = "Error with decoding city"
-        default:
-            break
-        }
+        label.text = ""
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -45,24 +40,40 @@ class ErrorView: UIView {
     func loadView() {
         addSubview(errorView)
         errorView.addSubview(errorLabel)
-        var topConstraint = errorView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+        topConstraint = errorView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
 //        errorView.addSubview(errorLabel)
         NSLayoutConstraint.activate([
 //            errorView.topAnchor.constraint(equalTo: topAnchor),
-            topConstraint,
+            topConstraint!,
             errorView.widthAnchor.constraint(equalTo: widthAnchor),
-            errorView.heightAnchor.constraint(equalToConstant: 40)
+            errorView.heightAnchor.constraint(equalToConstant: 40),
+            errorLabel.bottomAnchor.constraint(equalTo: errorView.bottomAnchor),
+            errorLabel.centerXAnchor.constraint(equalTo: errorView.centerXAnchor)
             ])
+        
+        
+    }
+    
+    func triggerAnimation() {
+        switch ErrorHandling.networkStatus {
+        case .NetworkError:
+            errorLabel.text = "Network Error"
+        case .DecodingError:
+            errorLabel.text = "Error with decoding city"
+        default:
+            errorLabel.text = "Hello"
+        }
         UIView.animate(withDuration: 1, animations:  {
-            topConstraint.constant = 30
+            self.isAnimationRunning = true
+            self.topConstraint!.constant = 30
             self.layoutIfNeeded()
         }, completion: {_ in
             UIView.animate(withDuration: 1, delay: 2, animations: {
-                topConstraint.constant = 0
+                self.topConstraint!.constant = 0
                 self.layoutIfNeeded()
+            }, completion: {_ in
+                self.isAnimationRunning = false
             })
-            
         })
-        
     }
 }

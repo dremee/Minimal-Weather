@@ -48,8 +48,6 @@ class CitiesListViewController: UIViewController {
         tableView.tableFooterView = UIView()
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
-        let errorCellNib = UINib(nibName: "ErrorViewCell", bundle: nil)
-        tableView.register(errorCellNib, forCellReuseIdentifier: "ErrorViewCell")
         
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
@@ -59,6 +57,7 @@ class CitiesListViewController: UIViewController {
                 locationAuthStatus = .alllow
             }
         }
+        
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
         self.navigationItem.leftBarButtonItem = refreshButton
         
@@ -70,7 +69,6 @@ class CitiesListViewController: UIViewController {
         }
         updateWeather()
         setupErrorView()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,7 +93,11 @@ class CitiesListViewController: UIViewController {
                             self.tableView.reloadData()
                         } else {
                             DispatchQueue.main.async {
-                                 self.tableView.reloadData()                            }
+                                if !self.errorView.isAnimationRunning {
+                                    self.errorView.triggerAnimation()
+                                }
+                                self.tableView.reloadData()
+                            }
                         }
                     })
                 }
@@ -146,6 +148,9 @@ class CitiesListViewController: UIViewController {
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 } else {
                     DispatchQueue.main.async {
+                        if !self.errorView.isAnimationRunning {
+                            self.errorView.triggerAnimation()
+                        }
                         self.tableView.reloadData()
                     }
                     
