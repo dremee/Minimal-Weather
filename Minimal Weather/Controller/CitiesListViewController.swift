@@ -129,6 +129,10 @@ class CitiesListViewController: UIViewController {
     
     //MARK: - Helper
     @objc func updateWeather() {
+        //We check, does location is work, and if not, delete location row (if it's was)
+        updateLocationRow()
+        
+        
         for (index, city) in cityWeatherList.enumerated() {
             // update only added cities
             var query = [String: String]()
@@ -169,7 +173,14 @@ class CitiesListViewController: UIViewController {
         self.refreshControl.endRefreshing()
     }
     
-  
+    private func updateLocationRow() {
+        checkLocationStatus()
+        if locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
+            cityWeatherList.remove(at: 0)
+            fileManager.saveWeatherListCities(list: cityWeatherList)
+            tableView.reloadData()
+        }
+    }
 
 }
 
