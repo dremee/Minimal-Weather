@@ -27,7 +27,7 @@ class CitiesListViewController: UIViewController {
     //Create refresh control
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(updateWeatherInPullRefresh), for: UIControl.Event.valueChanged)
+        refreshControl.addTarget(self, action: #selector(updateWeather), for: .valueChanged)
         refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
         return refreshControl
     }()
@@ -53,15 +53,15 @@ class CitiesListViewController: UIViewController {
         tableView.delegate = self
         //create footer bar, for not display empty cells
         tableView.tableFooterView = UIView()
-        tableView.addSubview(refreshControl)
+        tableView.refreshControl = refreshControl
         
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         
         checkLocationStatus()
         
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
-        self.navigationItem.leftBarButtonItem = refreshButton
+//        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
+//        self.navigationItem.leftBarButtonItem = refreshButton
         
         let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
@@ -145,24 +145,20 @@ class CitiesListViewController: UIViewController {
                     } else {
                         self.cityWeatherList[index] = weatherInfo
                     }
-                    
-                    self.tableView.reloadData()
+//                    self.tableView.reloadData()
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 } else {
                     DispatchQueue.main.async {
                         if !self.errorView.isAnimationRunning {
                             self.errorView.triggerAnimation()
                         }
-                        self.tableView.reloadData()
+                        
                     }
                 }
             }
         }
-    }
-    
-    @objc func updateWeatherInPullRefresh() {
-        updateWeather()
-        refreshControl.endRefreshing()
+        self.tableView.reloadData()
+        self.refreshControl.endRefreshing()
     }
     
   
