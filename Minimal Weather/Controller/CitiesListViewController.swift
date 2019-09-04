@@ -21,8 +21,9 @@ class CitiesListViewController: UIViewController {
     private var latitude: String?
     private var longitude: String?
     private var fileManager = SaveWeatherData()
-    
     private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
+    
+    private var timer = Timer()
     
     //Create refresh control
     lazy var refreshControl: UIRefreshControl = {
@@ -71,6 +72,13 @@ class CitiesListViewController: UIViewController {
         }
         updateWeather()
         setupErrorView()
+        
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { (_) in
+                print("Updated")
+                self.updateWeather()
+            })
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
