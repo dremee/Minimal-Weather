@@ -10,18 +10,17 @@ import UIKit
 import Foundation
 import CoreLocation
 
-class CitiesListViewController: UIViewController {
+class CitiesListViewController: MainLogicViewController {
     //MARK: - properties
     @IBOutlet weak var tableView: UITableView!
     
-    private let locationManager = CLLocationManager()
+//    private let locationManager = CLLocationManager()
     private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
     private var cityWeatherList = [WeatherDataModel]()
-    private var latitude: String?
-    private var longitude: String?
+
     private var fileManager = SaveWeatherData()
-    private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
+//    private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
     private var timer = Timer()
     
@@ -239,25 +238,25 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 //MARK: - Location Manager extension
-extension CitiesListViewController: CLLocationManagerDelegate {
+extension CitiesListViewController {
     
-    private func checkLocationStatus() {
-        if CLLocationManager.locationServicesEnabled() {
-            switch CLLocationManager.authorizationStatus() {
-            case .notDetermined, .restricted, .denied:
-                locationAuthStatus = .denied
-            case .authorizedAlways, .authorizedWhenInUse:
-                locationAuthStatus = .alllow
-            }
-        }
-    }
-    
-    private func initLocationManager() {
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-        locationManager.startUpdatingLocation()
-    }
+//    private func checkLocationStatus() {
+//        if CLLocationManager.locationServicesEnabled() {
+//            switch CLLocationManager.authorizationStatus() {
+//            case .notDetermined, .restricted, .denied:
+//                locationAuthStatus = .denied
+//            case .authorizedAlways, .authorizedWhenInUse:
+//                locationAuthStatus = .alllow
+//            }
+//        }
+//    }
+//
+//    private func initLocationManager() {
+//        locationManager.delegate = self
+//        locationManager.requestAlwaysAuthorization()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+//        locationManager.startUpdatingLocation()
+//    }
     
     //Location manager delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
