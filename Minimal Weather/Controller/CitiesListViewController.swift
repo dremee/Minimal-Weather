@@ -24,6 +24,13 @@ class CitiesListViewController: UIViewController {
     
     private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
+    //Create refresh control
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(updateWeatherInPullRefresh), for: UIControl.Event.valueChanged)
+        refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
+        return refreshControl
+    }()
     // add subview
     let errorView: ErrorView = {
         let view = ErrorView()
@@ -46,17 +53,12 @@ class CitiesListViewController: UIViewController {
         tableView.delegate = self
         //create footer bar, for not display empty cells
         tableView.tableFooterView = UIView()
+        tableView.addSubview(refreshControl)
+        
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         
-        if CLLocationManager.locationServicesEnabled() {
-            switch CLLocationManager.authorizationStatus() {
-            case .notDetermined, .restricted, .denied:
-                locationAuthStatus = .denied
-            case .authorizedAlways, .authorizedWhenInUse:
-                locationAuthStatus = .alllow
-            }
-        }
+        checkLocationStatus()
         
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
         self.navigationItem.leftBarButtonItem = refreshButton
@@ -153,12 +155,14 @@ class CitiesListViewController: UIViewController {
                         }
                         self.tableView.reloadData()
                     }
-                    
                 }
             }
         }
-        
-        
+    }
+    
+    @objc func updateWeatherInPullRefresh() {
+        updateWeather()
+        refreshControl.endRefreshing()
     }
     
   
@@ -167,6 +171,8 @@ class CitiesListViewController: UIViewController {
 
 //MARK: - TableView Extension
 extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    
     
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -219,6 +225,18 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
 
 //MARK: - Location Manager extension
 extension CitiesListViewController: CLLocationManagerDelegate {
+    
+    private func checkLocationStatus() {
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .notDetermined, .restricted, .denied:
+                locationAuthStatus = .denied
+            case .authorizedAlways, .authorizedWhenInUse:
+                locationAuthStatus = .alllow
+            }
+        }
+    }
+    
     private func initLocationManager() {
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
