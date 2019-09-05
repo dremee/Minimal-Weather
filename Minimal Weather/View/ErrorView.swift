@@ -9,7 +9,8 @@
 import UIKit
 
 class ErrorView: UIView {
-    private var topConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
+    
     private var errorView: UIView = {
         let view = UIView()
         view.backgroundColor = .red
@@ -40,15 +41,19 @@ class ErrorView: UIView {
     func loadView() {
         addSubview(errorView)
         errorView.addSubview(errorLabel)
-        topConstraint = errorView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+        heightConstraint = errorView.heightAnchor.constraint(equalToConstant: 0)
+        
+        
 //        errorView.addSubview(errorLabel)
         NSLayoutConstraint.activate([
-//            errorView.topAnchor.constraint(equalTo: topAnchor),
-            topConstraint!,
+//            errorView.topAnchor.constraint(equalTo: topConstraint),
+//            topConstraint!,
+            layoutMarginsGuide.bottomAnchor.constraint(equalTo: errorView.bottomAnchor),
             errorView.widthAnchor.constraint(equalTo: widthAnchor),
-            errorView.heightAnchor.constraint(equalToConstant: 40),
+            heightConstraint!,
             errorLabel.bottomAnchor.constraint(equalTo: errorView.bottomAnchor),
-            errorLabel.centerXAnchor.constraint(equalTo: errorView.centerXAnchor)
+            errorLabel.centerXAnchor.constraint(equalTo: errorView.centerXAnchor),
+            errorLabel.centerYAnchor.constraint(equalTo: errorView.centerYAnchor)
             ])
         
         
@@ -65,13 +70,14 @@ class ErrorView: UIView {
         }
         UIView.animate(withDuration: 1, animations:  {
             self.isAnimationRunning = true
-            self.topConstraint!.constant = 30
+            self.heightConstraint?.constant = 40
             self.layoutIfNeeded()
         }, completion: {_ in
             UIView.animate(withDuration: 1, delay: 2, animations: {
-                self.topConstraint!.constant = 0
+                self.heightConstraint?.constant = 0
                 self.layoutIfNeeded()
             }, completion: {_ in
+                self.errorLabel.text = ""
                 self.isAnimationRunning = false
             })
         })

@@ -41,9 +41,9 @@ class CitiesListViewController: MainLogicViewController {
     private func setupErrorView() {
         view.addSubview(errorView)
         NSLayoutConstraint.activate([
-            errorView.topAnchor.constraint(equalTo: view.topAnchor, constant: (self.navigationController?.navigationBar.frame.size.height)!),
+            errorView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
             errorView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            errorView.heightAnchor.constraint(equalToConstant: 40)
+            errorView.heightAnchor.constraint(equalToConstant: 100)
             ])
     }
     
@@ -176,7 +176,7 @@ class CitiesListViewController: MainLogicViewController {
     
     private func updateLocationRow() {
         checkLocationStatus()
-        if locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
+        if !cityWeatherList.isEmpty && locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
             cityWeatherList.remove(at: 0)
             fileManager.saveWeatherListCities(list: cityWeatherList)
             tableView.reloadData()
