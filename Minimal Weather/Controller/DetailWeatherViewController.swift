@@ -10,13 +10,9 @@ import UIKit
 import Foundation
 import CoreLocation
 
-class DetailWeatherViewController: UIViewController {
+class DetailWeatherViewController: MainLogicViewController {
     //MARK: - Properties
-    fileprivate var locationManager = CLLocationManager()
-    fileprivate var latitude: String = ""
-    fileprivate var longitude: String = ""
     var currentWeatherInfo: WeatherDataModel?
-    var timer = Timer()
     
     //MARK: - Networking
     fileprivate let weatherInfoController = WeatherInfoController()
@@ -34,19 +30,8 @@ class DetailWeatherViewController: UIViewController {
         if let currentView = currentWeatherInfo {
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
-            // we turn on location init only when we open location weather information and we need to update it by location latitude and longitude
-            if currentView.isLocationSearch {
-                self.locationInit()
-            }
-            //make timer for auto updating
-            DispatchQueue.main.async {
-                self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { [weak self](_) in
-                    if let self = self {
-                        self.updateData()
-                    }
-                    
-                })
-            }
+            
+            timeReloadInTime(time: 10, repeats: true, callback: updateData)
         }
     }
     
@@ -85,8 +70,8 @@ class DetailWeatherViewController: UIViewController {
         guard let weatherInfo = currentWeatherInfo else {return}
         var query = [String: String]()
         // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
-        if weatherInfo.isLocationSearch && longitude.count > 0 && latitude.count > 0 {
-            query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        if weatherInfo.isLocationSearch && locationAuthStatus == .alllow {
+            query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
         } else if weatherInfo.isLocationSearch {
             // if location is off, just back user to city list
             self.navigationController?.popViewController(animated: true)
@@ -118,14 +103,9 @@ class DetailWeatherViewController: UIViewController {
     }
 }
 
-extension DetailWeatherViewController: CLLocationManagerDelegate {
-    // Initialize loction manager when city was found by geolocation data
-    func locationInit() {
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-        locationManager.startUpdatingLocation()
-    }
+//MARK: - Location Manager Delegate
+extension DetailWeatherViewController {
+
     
     // just update latitude and longitude
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
