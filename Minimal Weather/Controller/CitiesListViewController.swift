@@ -22,7 +22,7 @@ class CitiesListViewController: MainLogicViewController {
     private var fileManager = SaveWeatherData()
 //    private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
     
-    private var timer = Timer()
+    
     
     //Create refresh control
     lazy var refreshControl: UIRefreshControl = {
@@ -72,12 +72,7 @@ class CitiesListViewController: MainLogicViewController {
         updateWeather()
         setupErrorView()
         
-        DispatchQueue.main.async {
-            self.timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true, block: { (_) in
-                print("Updated")
-                self.updateWeather()
-            })
-        }
+        timeReloadInTime(time: 10, repeats: true, callback: updateWeather)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -239,24 +234,6 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
 
 //MARK: - Location Manager extension
 extension CitiesListViewController {
-    
-//    private func checkLocationStatus() {
-//        if CLLocationManager.locationServicesEnabled() {
-//            switch CLLocationManager.authorizationStatus() {
-//            case .notDetermined, .restricted, .denied:
-//                locationAuthStatus = .denied
-//            case .authorizedAlways, .authorizedWhenInUse:
-//                locationAuthStatus = .alllow
-//            }
-//        }
-//    }
-//
-//    private func initLocationManager() {
-//        locationManager.delegate = self
-//        locationManager.requestAlwaysAuthorization()
-//        locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-//        locationManager.startUpdatingLocation()
-//    }
     
     //Location manager delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

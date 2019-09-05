@@ -15,6 +15,9 @@ class MainLogicViewController: UIViewController {
     var latitude: String?
     var longitude: String?
     
+    //Timer
+    var timer = Timer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initLocationManager()
@@ -22,11 +25,20 @@ class MainLogicViewController: UIViewController {
         
     }
     
-
+    //MARK: - Helper
+    func timeReloadInTime(time: TimeInterval, repeats: Bool, callback: @escaping () -> ()) {
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimer(withTimeInterval: time, repeats: repeats, block: { (_) in
+                print("Updated")
+                callback()
+            })
+        }
+    }
     
 
 }
 
+//MARK: - Location MAnager Delegate
 extension MainLogicViewController: CLLocationManagerDelegate {
     func checkLocationStatus() {
         if CLLocationManager.locationServicesEnabled() {
