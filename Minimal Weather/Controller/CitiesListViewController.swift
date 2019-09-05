@@ -31,7 +31,8 @@ class CitiesListViewController: MainLogicViewController {
         refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
         return refreshControl
     }()
-    // add subview
+    
+    // add subview, that demonstrait error message
     let errorView: ErrorView = {
         let view = ErrorView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -186,9 +187,6 @@ class CitiesListViewController: MainLogicViewController {
 
 //MARK: - TableView Extension
 extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
-    
-    
-    
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cityWeatherList.count
@@ -234,8 +232,6 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
             self.tableView.reloadData()
         }
     }
-    
-    //    Header cell
 }
 
 //MARK: - Location Manager extension
