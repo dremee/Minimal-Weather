@@ -10,16 +10,25 @@ import UIKit
 import Foundation
 import CoreLocation
 
+//MARK: - Protocol to delegate data
+protocol WeatherDataDelegate {
+    func updateWeatherDataInStaticTableView(with data: WeatherDataModel)
+}
+
 class DetailWeatherViewController: MainLogicViewController {
+    //Delegate
+    var delegate: WeatherDataDelegate?
     //MARK: - Properties
     var currentWeatherInfo: WeatherDataModel?
-    var tableViewController: WeatherInfoTableViewController?
+    
     
     //MARK: - Networking
     fileprivate let weatherInfoController = WeatherInfoController()
     
     //MARK: - Outlets
     @IBOutlet weak var logoImageView: UIImageView!
+    @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var currentTimeLabel: UILabel!
     
     
     //MAKR: - View lifecycle
@@ -27,12 +36,10 @@ class DetailWeatherViewController: MainLogicViewController {
         super.viewDidLoad()
         if let currentView = currentWeatherInfo {
             title = currentView.name
-            self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+            self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
             
-            tableViewController = self.children[0] as? WeatherInfoTableViewController
+            delegate?.updateWeatherDataInStaticTableView(with: self.currentWeatherInfo!)
             reloadDataInTime(time: 10, repeats: true, callback: updateData)
-            
-            
         }
     }
     
@@ -50,13 +57,16 @@ class DetailWeatherViewController: MainLogicViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? WeatherInfoTableViewController, segue.identifier == "DetailWeatherSegue" {
-            vc.data = currentWeatherInfo
+            self.delegate = vc
+            
         }
     }
+
     
     //MARK: - Helpers
-    fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: Int) {
-
+    fileprivate func updateUI(icon: String, timezone: Int, city: String) {
+        self.cityLabel.text = city
+        self.currentTimeLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
         let imageURL = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png")
         //Get image data in background queue
@@ -94,11 +104,12 @@ class DetailWeatherViewController: MainLogicViewController {
                 self.currentWeatherInfo?.name = currentView.name
                 self.currentWeatherInfo?.main = currentView.main
                 self.currentWeatherInfo?.weather = currentView.weather
-                self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
+                self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
+                self.delegate?.updateWeatherDataInStaticTableView(with: currentView)
             } else {
                 // if user have problem with network, we staying in the current vc and show him last saved information
                 DispatchQueue.main.async {
-                    self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name, temp: self.currentWeatherInfo!.main.celsius)
+                    self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)
                 }
                 
             }

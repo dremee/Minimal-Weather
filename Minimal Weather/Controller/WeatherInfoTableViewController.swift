@@ -8,7 +8,9 @@
 
 import UIKit
 
-class WeatherInfoTableViewController: UITableViewController {
+class WeatherInfoTableViewController: UITableViewController, WeatherDataDelegate {
+    
+    
     @IBOutlet weak var currentWeatherTempLabel: UILabel!
     @IBOutlet weak var minimunTempLabel: UILabel!
     @IBOutlet weak var maximumTempLabel: UILabel!
@@ -22,20 +24,18 @@ class WeatherInfoTableViewController: UITableViewController {
         if let data = data {
             print(data)
         }
-        
-        updateCells(with: data)
     }
 
-    func updateCells(with data: WeatherDataModel?) {
-        guard let data = data else { return }
+    
+    //MARK: - update weather data with delegate
+    func updateWeatherDataInStaticTableView(with data: WeatherDataModel) {
         currentWeatherTempLabel.text = "\(data.main.celsius)"
         minimunTempLabel.text = "\(data.main.minCelsius)"
         maximumTempLabel.text = "\(data.main.maxCelsius)"
         windSpeedLabel.text = "\(data.wind.windSpeed)"
         windDegreeLabel.text = data.wind.windDegreeRepresentation
+        print("updating weather data")
     }
-    
-
 
 
 }
