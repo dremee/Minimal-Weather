@@ -11,13 +11,13 @@ import Foundation
 import CoreLocation
 
 //MARK: - Protocol to delegate data
-protocol WeatherDataDelegate {
+protocol DetailWeatherDelegate {
     func updateWeatherDataInStaticTableView(with data: WeatherDataModel)
 }
 
 class DetailWeatherViewController: MainLogicViewController {
     //Delegate
-    var delegate: WeatherDataDelegate?
+    var delegate: DetailWeatherDelegate?
     //MARK: - Properties
     var currentWeatherInfo: WeatherDataModel?
     
@@ -49,6 +49,7 @@ class DetailWeatherViewController: MainLogicViewController {
         timer.invalidate()
     }
     
+    //create for testing ARC
     deinit {
         print("Deinit detail vc")
     }

@@ -8,33 +8,29 @@
 
 import UIKit
 
-class WeatherInfoTableViewController: UITableViewController, WeatherDataDelegate {
+class WeatherInfoTableViewController: UITableViewController, DetailWeatherDelegate {
     
-    
+    //MARK: - outlets
     @IBOutlet weak var currentWeatherTempLabel: UILabel!
     @IBOutlet weak var minimunTempLabel: UILabel!
     @IBOutlet weak var maximumTempLabel: UILabel!
     @IBOutlet weak var windSpeedLabel: UILabel!
     @IBOutlet weak var windDegreeLabel: UILabel!
     
-    var data: WeatherDataModel?
+    //MARK: - view lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.tableFooterView = UIView()
-        if let data = data {
-            print(data)
-        }
     }
 
     
-    //MARK: - update weather data with delegate
+    //MARK: - WeatherDataDelegate
     func updateWeatherDataInStaticTableView(with data: WeatherDataModel) {
         currentWeatherTempLabel.text = "\(data.main.celsius)"
         minimunTempLabel.text = "\(data.main.minCelsius)"
         maximumTempLabel.text = "\(data.main.maxCelsius)"
         windSpeedLabel.text = "\(data.wind.windSpeed)"
         windDegreeLabel.text = data.wind.windDegreeRepresentation
-        print("updating weather data")
     }
 
 
