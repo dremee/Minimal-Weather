@@ -103,13 +103,7 @@ class CitiesListViewController: MainLogicViewController {
                             self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                             self.tableView.reloadData()
                         } else {
-                            DispatchQueue.main.async {
-                                print(query)
-                                if !self.errorView.isAnimationRunning {
-                                    self.errorView.triggerAnimation()
-                                }
-                                self.tableView.reloadData()
-                            }
+                            self.runErrorAnimation()
                         }
                     })
                 }
@@ -136,6 +130,7 @@ class CitiesListViewController: MainLogicViewController {
         
         //Check, that list is not empty
         if cityWeatherList.isEmpty {
+            self.refreshControl.endRefreshing()
             return
         }
         
@@ -155,29 +150,31 @@ class CitiesListViewController: MainLogicViewController {
             }
             
             self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
-                print("Updating city: \(city.name) with query: \(query)")
                 if let weatherInfo = weatherInfo {
                     // here i make flag for first row, that found by location
                     if index == 0 && city.isLocationSearch {
                         self.cityWeatherList[index] = weatherInfo
                         self.cityWeatherList[index].isLocationSearch = true
                     } else {
+                        //default flag is false
                         self.cityWeatherList[index] = weatherInfo
                     }
-//                    self.tableView.reloadData()
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 } else {
-                    DispatchQueue.main.async {
-                        print(query)
-                        if !self.errorView.isAnimationRunning {
-                            self.errorView.triggerAnimation()
-                        }
-                    }
+                    self.runErrorAnimation()
                 }
             }
         }
         self.tableView.reloadData()
         self.refreshControl.endRefreshing()
+    }
+    
+    private func runErrorAnimation() {
+        DispatchQueue.main.async {
+            if !self.errorView.isAnimationRunning {
+                self.errorView.triggerAnimation()
+            }
+        }
     }
     
     private func updateLocationRow() {
