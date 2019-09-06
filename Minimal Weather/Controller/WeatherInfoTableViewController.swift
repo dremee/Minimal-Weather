@@ -9,6 +9,12 @@
 import UIKit
 
 class WeatherInfoTableViewController: UITableViewController {
+    @IBOutlet weak var currentWeatherTempLabel: UILabel!
+    @IBOutlet weak var minimunTempLabel: UILabel!
+    @IBOutlet weak var maximumTempLabel: UILabel!
+    @IBOutlet weak var windSpeedLabel: UILabel!
+    @IBOutlet weak var windDegreeLabel: UILabel!
+    
     var data: WeatherDataModel?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,8 +22,17 @@ class WeatherInfoTableViewController: UITableViewController {
         if let data = data {
             print(data)
         }
+        
+        updateCells(with: data)
     }
 
+    func updateCells(with data: WeatherDataModel?) {
+        guard let data = data else { return }
+        currentWeatherTempLabel.text = "\(data.main.celsius)"
+        minimunTempLabel.text = "\(data.main.minCelsius)"
+        maximumTempLabel.text = "\(data.main.maxCelsius)"
+    }
+    
 
 
 
