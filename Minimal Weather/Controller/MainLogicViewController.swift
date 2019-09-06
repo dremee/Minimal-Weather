@@ -26,7 +26,7 @@ class MainLogicViewController: UIViewController {
     }
     
     //MARK: - Helper
-    func timeReloadInTime(time: TimeInterval, repeats: Bool, callback: @escaping () -> ()) {
+    func reloadDataInTime(time: TimeInterval, repeats: Bool, callback: @escaping () -> ()) {
         DispatchQueue.main.async {
             self.timer = Timer.scheduledTimer(withTimeInterval: time, repeats: repeats, block: { (_) in
                 print("Updated")

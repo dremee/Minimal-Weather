@@ -9,22 +9,15 @@
 import UIKit
 
 class WeatherInfoTableViewController: UITableViewController {
-
+    var data: WeatherDataModel?
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.tableFooterView = UIView()
+        if let data = data {
+            print(data)
+        }
     }
 
-
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        // #warning Incomplete implementation, return the number of sections
-//        return 0
-//    }
-//
-//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        // #warning Incomplete implementation, return the number of rows
-//        return 0
-//    }
 
 
 

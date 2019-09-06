@@ -73,7 +73,7 @@ class CitiesListViewController: MainLogicViewController {
         updateWeather()
         setupErrorView()
         
-        timeReloadInTime(time: 10, repeats: true, callback: updateWeather)
+        reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
     }
     
     override func viewWillAppear(_ animated: Bool) {

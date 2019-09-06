@@ -13,6 +13,7 @@ import CoreLocation
 class DetailWeatherViewController: MainLogicViewController {
     //MARK: - Properties
     var currentWeatherInfo: WeatherDataModel?
+    var tableViewController: WeatherInfoTableViewController?
     
     //MARK: - Networking
     fileprivate let weatherInfoController = WeatherInfoController()
@@ -28,7 +29,10 @@ class DetailWeatherViewController: MainLogicViewController {
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name, temp: currentView.main.celsius)
             
-            timeReloadInTime(time: 10, repeats: true, callback: updateData)
+            tableViewController = self.children[0] as? WeatherInfoTableViewController
+            reloadDataInTime(time: 10, repeats: true, callback: updateData)
+            
+            
         }
     }
     
@@ -42,9 +46,15 @@ class DetailWeatherViewController: MainLogicViewController {
         print("Deinit detail vc")
     }
     
-    //MARK: - Helpers
- 
+    //MARK: - Navigation
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? WeatherInfoTableViewController, segue.identifier == "DetailWeatherSegue" {
+            vc.data = currentWeatherInfo
+        }
+    }
+    
+    //MARK: - Helpers
     fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: Int) {
 
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
