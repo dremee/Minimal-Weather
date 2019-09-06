@@ -18,9 +18,6 @@ class DetailWeatherViewController: MainLogicViewController {
     fileprivate let weatherInfoController = WeatherInfoController()
     
     //MARK: - Outlets
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var tempLabel: UILabel!
-    @IBOutlet weak var localDateLabel: UILabel!
     @IBOutlet weak var logoImageView: UIImageView!
     
     
@@ -49,10 +46,7 @@ class DetailWeatherViewController: MainLogicViewController {
  
     
     fileprivate func updateUI(icon: String, timezone: Int, city: String, temp: Int) {
- 
-        localDateLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
-        cityLabel.text = city
-        tempLabel.text = "\(temp) ℃"
+
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
         let imageURL = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png")
         //Get image data in background queue

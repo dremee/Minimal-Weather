@@ -12,6 +12,7 @@
 		111D927C23114047001E8C13 /* Formatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D927B23114047001E8C13 /* Formatter+Helpers.swift */; };
 		113D467F2317CFB400C84495 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D467E2317CFB400C84495 /* ErrorHandling.swift */; };
 		114D50AF2316B04B00AEBD20 /* SaveWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114D50AE2316B04B00AEBD20 /* SaveWeatherData.swift */; };
+		115519272322423B00A24208 /* WeatherInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115519262322423B00A24208 /* WeatherInfoTableViewController.swift */; };
 		116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFDF230E74AF00354DF9 /* AppDelegate.swift */; };
 		116DBFE2230E74AF00354DF9 /* DetailWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFE1230E74AF00354DF9 /* DetailWeatherViewController.swift */; };
 		116DBFE5230E74AF00354DF9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 116DBFE3230E74AF00354DF9 /* Main.storyboard */; };
@@ -32,6 +33,7 @@
 		111D927B23114047001E8C13 /* Formatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Formatter+Helpers.swift"; sourceTree = "<group>"; };
 		113D467E2317CFB400C84495 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
 		114D50AE2316B04B00AEBD20 /* SaveWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveWeatherData.swift; sourceTree = "<group>"; };
+		115519262322423B00A24208 /* WeatherInfoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoTableViewController.swift; sourceTree = "<group>"; };
 		116DBFDC230E74AF00354DF9 /* Minimal Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Minimal Weather.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		116DBFDF230E74AF00354DF9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		116DBFE1230E74AF00354DF9 /* DetailWeatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailWeatherViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				11CAFC41231FCD8C00F7D1C2 /* MainLogicViewController.swift */,
 				11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */,
 				116DBFE1230E74AF00354DF9 /* DetailWeatherViewController.swift */,
+				115519262322423B00A24208 /* WeatherInfoTableViewController.swift */,
 				116DBFFC230FD2A800354DF9 /* Network */,
 			);
 			path = Controller;
@@ -258,6 +261,7 @@
 				114D50AF2316B04B00AEBD20 /* SaveWeatherData.swift in Sources */,
 				1119F8D423192B3100FD739B /* WeatherViewCell.swift in Sources */,
 				116DBFFE230FD2E800354DF9 /* WeatherInfoController.swift in Sources */,
+				115519272322423B00A24208 /* WeatherInfoTableViewController.swift in Sources */,
 				11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */,
 				116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */,
 				116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */,
