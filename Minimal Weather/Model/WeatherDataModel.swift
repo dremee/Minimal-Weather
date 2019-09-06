@@ -12,7 +12,7 @@ import Foundation
 
 struct WeatherDataModel: Codable, CustomStringConvertible {
     var description: String {
-        return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone), isLocationSearch: \(String(describing: self.isLocationSearch))"
+        return "Weather data model is: \(self.coord), \(self.weather), \(self.main), \(self.name), \(self.timezone), isLocationSearch: \(String(describing: self.isLocationSearch)), wind: \(self.wind)"
     }
     
     var coord: Coord
@@ -20,11 +20,12 @@ struct WeatherDataModel: Codable, CustomStringConvertible {
     var main: Main
     var name: String
     var timezone: Int
+    var wind: Wind
     // trigger, when searching by location.
     var isLocationSearch: Bool! = false
     
     enum CodingKeys: String, CodingKey {
-        case coord, weather, main, name, timezone, isLocationSearch
+        case coord, weather, main, name, timezone, isLocationSearch, wind
     }
 
 }
@@ -70,6 +71,15 @@ struct Coord: Codable {
     let lat: Double
 }
 
+struct Wind: Codable {
+    let windSpeed: Double
+    let windDegree: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case windSpeed = "speed"
+        case windDegree = "deg"
+    }
+}
 
 
 
