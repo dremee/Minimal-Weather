@@ -73,9 +73,10 @@ struct Coord: Codable {
 
 struct Wind: Codable {
     let windSpeed: Double
-    let windDegree: Double
-    var windDegreeRepresentation: String {
-        let degree = Int(self.windDegree)
+    let windDegree: Double?
+    var windDegreeRepresentation: String? {
+        guard let windDegree = self.windDegree else {return "--"}
+        let degree = Int(windDegree)
         switch degree {
         case 0, 360:
             return "N"

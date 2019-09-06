@@ -21,8 +21,9 @@ struct WeatherInfoController {
             }
             let jsonDecoder = JSONDecoder()
             guard let data = data, var weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-                print("Error with decoding network")
+                print("Error with decoding city")
                 ErrorHandling.networkStatus = .DecodingError
+                print(url)
                 completion(nil)
                 return
             }

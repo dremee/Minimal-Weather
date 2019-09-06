@@ -70,17 +70,17 @@ class CitiesListViewController: MainLogicViewController {
         if let data = fileManager.loadWheatherListCities() {
             cityWeatherList = data
         }
-        updateWeather()
         setupErrorView()
         
+        updateWeather()
         reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateWeather()
-        
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        updateWeather()
+//
+//    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -104,6 +104,7 @@ class CitiesListViewController: MainLogicViewController {
                             self.tableView.reloadData()
                         } else {
                             DispatchQueue.main.async {
+                                print(query)
                                 if !self.errorView.isAnimationRunning {
                                     self.errorView.triggerAnimation()
                                 }
@@ -133,6 +134,10 @@ class CitiesListViewController: MainLogicViewController {
         //We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()
         
+        //Check, that list is not empty
+        if cityWeatherList.isEmpty {
+            return
+        }
         
         for (index, city) in cityWeatherList.enumerated() {
             // update only added cities
@@ -141,7 +146,7 @@ class CitiesListViewController: MainLogicViewController {
             // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
             if index == 0 && city.isLocationSearch && locationAuthStatus == .alllow && latitude != nil && longitude != nil {
                 query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            } else if index == 0 && city.isLocationSearch && locationAuthStatus == .denied {
+            } else if index == 0 && city.isLocationSearch {
                 //here we check, that location manager is denied. I think, i will delete firs row here
                 continue
             } else {
@@ -150,6 +155,7 @@ class CitiesListViewController: MainLogicViewController {
             }
             
             self.weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
+                print("Updating city: \(city.name) with query: \(query)")
                 if let weatherInfo = weatherInfo {
                     // here i make flag for first row, that found by location
                     if index == 0 && city.isLocationSearch {
@@ -162,10 +168,10 @@ class CitiesListViewController: MainLogicViewController {
                     self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
                 } else {
                     DispatchQueue.main.async {
+                        print(query)
                         if !self.errorView.isAnimationRunning {
                             self.errorView.triggerAnimation()
                         }
-                        
                     }
                 }
             }
@@ -246,6 +252,7 @@ extension CitiesListViewController {
             let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             weatherInfoController.fetchWeatherRequestController(query: query) { (weatherInfo) in
                 if var weatherInfo = weatherInfo {
+                    print("Updating with location")
                     // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
                     weatherInfo.isLocationSearch! = true
                     if self.cityWeatherList.isEmpty{
