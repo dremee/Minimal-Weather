@@ -14,15 +14,11 @@ class CitiesListViewController: MainLogicViewController {
     //MARK: - properties
     @IBOutlet weak var tableView: UITableView!
     
-//    private let locationManager = CLLocationManager()
     private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
     private var cityWeatherList = [WeatherDataModel]()
 
     private var fileManager = SaveWeatherData()
-//    private var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
-    
-    
     
     //Create refresh control
     lazy var refreshControl: UIRefreshControl = {
@@ -32,7 +28,7 @@ class CitiesListViewController: MainLogicViewController {
         return refreshControl
     }()
     
-    // add subview, that demonstrait error message
+    // add error view and setup it
     let errorView: ErrorView = {
         let view = ErrorView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -55,36 +51,40 @@ class CitiesListViewController: MainLogicViewController {
         //create footer bar, for not display empty cells
         tableView.tableFooterView = UIView()
         tableView.refreshControl = refreshControl
-        
+        //add weather custom cell
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         
+        //check location status from MainLogicViewController
         checkLocationStatus()
         
-//        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(updateWeather))
-//        self.navigationItem.leftBarButtonItem = refreshButton
-        
+        //Create add city button and add it like right bar button item
         let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
+        
+        //Init location manager
         initLocationManager()
+        
+        //Make safe unwrapping from file manager, and if it exist, update weather
         if let data = fileManager.loadWheatherListCities() {
             cityWeatherList = data
+            updateWeather()
         }
+        
         setupErrorView()
         
-        updateWeather()
+        
+        //Reload data every 10 seconds
         reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        updateWeather()
-//
-//    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    //MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetailSegue" {
+            if let vc = segue.destination as? DetailWeatherViewController {
+                vc.currentWeatherInfo = selectedWeather
+            }
+        }
     }
     
     //MARK: - Actions
@@ -114,16 +114,11 @@ class CitiesListViewController: MainLogicViewController {
             present(alert, animated: true)
     }
     
-    //MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowDetailSegue" {
-            if let vc = segue.destination as? DetailWeatherViewController {
-                vc.currentWeatherInfo = selectedWeather
-            }
-        }
-    }
+
     
     //MARK: - Helper
+    
+    //update weather list
     @objc func updateWeather() {
         //We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()
@@ -169,6 +164,7 @@ class CitiesListViewController: MainLogicViewController {
         self.refreshControl.endRefreshing()
     }
     
+    //Actiovating of error view
     private func runErrorAnimation() {
         DispatchQueue.main.async {
             if !self.errorView.isAnimationRunning {
@@ -177,6 +173,7 @@ class CitiesListViewController: MainLogicViewController {
         }
     }
     
+    //Delete location row, if location manager is off and location row is exist
     private func updateLocationRow() {
         checkLocationStatus()
         if !cityWeatherList.isEmpty && locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
@@ -220,6 +217,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         cell?.weatherView.backgroundColor = .black
     }
     
+    //If first row get with location, don't access user to delete it
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if indexPath.row == 0 && cityWeatherList[0].isLocationSearch {
             return false
