@@ -11,17 +11,17 @@ import Foundation
 import CoreLocation
 
 class CitiesListViewController: MainLogicViewController {
-    //MARK: - properties
+    
     @IBOutlet weak var tableView: UITableView!
     
+    //MARK: - properties
     private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
     private var cityWeatherList = [WeatherDataModel]()
-
     private var fileManager = SaveWeatherData()
     
     //Create refresh control
-    lazy var refreshControl: UIRefreshControl = {
+    private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(updateWeather), for: .valueChanged)
         refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
@@ -29,7 +29,7 @@ class CitiesListViewController: MainLogicViewController {
     }()
     
     // add error view and setup it
-    let errorView: ErrorView = {
+    private let errorView: ErrorView = {
         let view = ErrorView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -88,7 +88,7 @@ class CitiesListViewController: MainLogicViewController {
     }
     
     //MARK: - Actions
-    @objc func addCity() {
+    @objc private func addCity() {
             let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
             alert.addTextField(configurationHandler: nil)
             let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
@@ -119,7 +119,7 @@ class CitiesListViewController: MainLogicViewController {
     //MARK: - Helper
     
     //update weather list
-    @objc func updateWeather() {
+    @objc private func updateWeather() {
         //We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()
         

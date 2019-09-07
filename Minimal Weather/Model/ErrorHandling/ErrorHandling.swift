@@ -15,6 +15,7 @@ class ErrorHandling {
     }
     
     static var networkStatus: NetworkError = .NoError
+    
     enum NetworkError {
         case NetworkError
         case DecodingError

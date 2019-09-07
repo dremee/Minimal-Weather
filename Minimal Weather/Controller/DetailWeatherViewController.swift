@@ -23,7 +23,7 @@ class DetailWeatherViewController: MainLogicViewController {
     
     
     //MARK: - Networking
-    fileprivate let weatherInfoController = WeatherInfoController()
+    private let weatherInfoController = WeatherInfoController()
     
     //MARK: - Outlets
     @IBOutlet weak var logoImageView: UIImageView!
@@ -65,7 +65,7 @@ class DetailWeatherViewController: MainLogicViewController {
 
     
     //MARK: - Helpers
-    fileprivate func updateUI(icon: String, timezone: Int, city: String) {
+    private func updateUI(icon: String, timezone: Int, city: String) {
         self.cityLabel.text = city
         self.currentTimeLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
