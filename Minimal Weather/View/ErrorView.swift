@@ -59,14 +59,12 @@ class ErrorView: UIView {
         
     }
     
-    func triggerAnimation() {
-        switch ErrorHandling.networkStatus {
-        case .NetworkError:
+    func triggerAnimation(error: Error) {
+        switch error as! NetworkError {
+        case .FetchingError:
             errorLabel.text = "Network Error"
         case .DecodingError:
             errorLabel.text = "Error with decoding city"
-        default:
-            errorLabel.text = "Hello"
         }
         UIView.animate(withDuration: 1, animations:  {
             self.isAnimationRunning = true

@@ -11,7 +11,7 @@ import CoreLocation
 // This view controller will controll all compare logic from two controllers
 class MainLogicViewController: UIViewController {
     let locationManager = CLLocationManager()
-    var locationAuthStatus = ErrorHandling.LocationAuthStatus.denied
+    var locationAuthStatus = LocationAuthStatus.denied
     var latitude: String?
     var longitude: String?
     

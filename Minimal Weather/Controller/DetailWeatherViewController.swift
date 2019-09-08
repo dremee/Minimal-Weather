@@ -95,27 +95,21 @@ class DetailWeatherViewController: MainLogicViewController {
             query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
         
-        self.weatherInfoController.fetchWeatherRequestController(query: query) { [weak self](weatherInfo) in
-
-            guard let self = self else {return}
+        self.weatherInfoController.fetchWeatherRequestController(query: query, success: { [weak self](weatherInfo) in
             
-            if let currentView = weatherInfo {
-                //have to update data, without updating isLocationSearch for control next updating. If i just make currentWeatherLocation = currentView, i lost my isLocationSearch status
-                self.currentWeatherInfo?.coord = currentView.coord
-                self.currentWeatherInfo?.name = currentView.name
-                self.currentWeatherInfo?.main = currentView.main
-                self.currentWeatherInfo?.weather = currentView.weather
-                self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
-                self.delegate?.updateWeatherDataInStaticTableView(with: currentView)
-            } else {
-                // if user have problem with network, we staying in the current vc and show him last saved information
+            guard let self = self else {return}
+            self.currentWeatherInfo?.coord = weatherInfo.coord
+            self.currentWeatherInfo?.name = weatherInfo.name
+            self.currentWeatherInfo?.main = weatherInfo.main
+            self.currentWeatherInfo?.weather = weatherInfo.weather
+            self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name)
+            self.delegate?.updateWeatherDataInStaticTableView(with: weatherInfo)
+            
+            }, failure: { error in
                 DispatchQueue.main.async {
                     self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)
                 }
-                
-            }
-            
-        }
+        })
     }
 }
 

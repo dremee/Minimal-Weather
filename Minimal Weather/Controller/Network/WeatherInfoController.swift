@@ -9,28 +9,23 @@
 import Foundation
 
 struct WeatherInfoController {
-    func fetchWeatherRequestController(query: [String: String], completion: @escaping (WeatherDataModel?) -> ()) {
+    func fetchWeatherRequestController(query: [String: String], success: @escaping (WeatherDataModel) -> (), failure: @escaping (Error) -> ()) {
         let weatherURL = URL(string: "https://api.openweathermap.org/data/2.5/weather")
         let url = weatherURL?.withQueries(query)
         let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
-            if let error = error {
-                print("Network error: \(error.localizedDescription)")
-                ErrorHandling.networkStatus = .NetworkError
-                completion(nil)
+            if let _ = error {
+                failure(NetworkError.FetchingError)
                 return
             }
             let jsonDecoder = JSONDecoder()
             guard let data = data, var weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-                print("Error with decoding city")
-                ErrorHandling.networkStatus = .DecodingError
-                print(url)
-                completion(nil)
+
+                failure(NetworkError.DecodingError)
                 return
             }
-            ErrorHandling.networkStatus = .NoError
             DispatchQueue.main.async {
                 weatherInfo.isLocationSearch = false
-                completion(weatherInfo)
+                success(weatherInfo)
             }
         }
         task.resume()

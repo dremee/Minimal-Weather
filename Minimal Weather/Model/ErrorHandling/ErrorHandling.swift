@@ -8,19 +8,17 @@
 
 import Foundation
 
-class ErrorHandling {
-    enum LocationAuthStatus {
-        case alllow
-        case denied
-    }
-    
-    static var networkStatus: NetworkError = .NoError
-    
-    enum NetworkError {
-        case NetworkError
-        case DecodingError
-        case NoError
-    }
+
+enum LocationAuthStatus {
+    case alllow
+    case denied
 }
+    
+    
+enum NetworkError: Error {
+        case FetchingError
+        case DecodingError
+    }
+
 
 
