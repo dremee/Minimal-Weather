@@ -74,9 +74,17 @@ struct Coord: Codable {
 struct Wind: Codable {
     let windSpeed: Double
     let windDegree: Double?
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case windSpeed = "speed"
+        case windDegree = "deg"
+    }
+}
+
+extension Double {
     var windDegreeRepresentation: String? {
-        guard let windDegree = self.windDegree else {return "--"}
-        let degree = Int(windDegree)
+        let degree = Int(self)
         switch degree {
         case 0, 360:
             return "N"
@@ -111,15 +119,8 @@ struct Wind: Codable {
         case 316..<360:
             return "NWN"
         default:
-            return "N"
+            return nil
         }
     }
-    
-    enum CodingKeys: String, CodingKey {
-        case windSpeed = "speed"
-        case windDegree = "deg"
-    }
 }
-
-
 

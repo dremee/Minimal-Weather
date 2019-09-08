@@ -30,7 +30,7 @@ class WeatherInfoTableViewController: UITableViewController, DetailWeatherDelega
         minimunTempLabel.text = "\(data.main.minCelsius)"
         maximumTempLabel.text = "\(data.main.maxCelsius)"
         windSpeedLabel.text = "\(data.wind.windSpeed)"
-        windDegreeLabel.text = data.wind.windDegreeRepresentation
+        windDegreeLabel.text = data.wind.windDegree?.windDegreeRepresentation
     }
 
 
