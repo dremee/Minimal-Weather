@@ -36,20 +36,25 @@ struct Main: Codable {
     let temp: Double
     let tempMin: Double
     let tempMax: Double
-    var celsius: Int {
-        return Int(self.temp - 273.3)
-    }
-    var minCelsius: Int {
-        return Int(self.tempMin - 273.3)
-    }
-    var maxCelsius: Int {
-        return Int(self.tempMax - 273.3)
-    }
+    let celsius: Int
+    let minCelsius: Int
+    let maxCelsius: Int
     
     enum CodingKeys: String, CodingKey {
         case temp
         case tempMin = "temp_min"
         case tempMax = "temp_max"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.temp = try container.decode(Double.self, forKey: CodingKeys.temp)
+        self.tempMin = try container.decode(Double.self, forKey: CodingKeys.tempMin)
+        self.tempMax = try container.decode(Double.self, forKey: CodingKeys.tempMax)
+        
+        self.celsius = Int(self.temp - 273.3)
+        self.minCelsius = Int(self.tempMin - 273.3)
+        self.maxCelsius = Int(self.tempMax - 273.3)
     }
 }
 
