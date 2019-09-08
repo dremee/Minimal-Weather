@@ -19,7 +19,6 @@ class CitiesListViewController: MainLogicViewController {
     private var selectedWeather: WeatherDataModel?
     private var cityWeatherList = [WeatherDataModel]()
     private var fileManager = SaveWeatherData()
-    private var error: Error?
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
@@ -105,8 +104,7 @@ class CitiesListViewController: MainLogicViewController {
                         self.tableView.reloadData()
                         
                     }, failure: {error in
-                        self.error = error
-                        self.runErrorAnimation()
+                        self.runErrorAnimation(error: error)
                     })
                 }
             }
@@ -157,8 +155,7 @@ class CitiesListViewController: MainLogicViewController {
                 }
                 self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
             }, failure: { error in
-                self.error = error
-                self.runErrorAnimation()
+                self.runErrorAnimation(error: error)
             })
         }
         self.tableView.reloadData()
@@ -166,11 +163,9 @@ class CitiesListViewController: MainLogicViewController {
     }
     
     //Actiovating of error view
-    private func runErrorAnimation() {
+    private func runErrorAnimation(error: Error) {
         DispatchQueue.main.async {
-            if !self.errorView.isAnimationRunning {
-                self.errorView.triggerAnimation(error: self.error!)
-            }
+            self.errorView.handleErrorAnimation(error: error)
         }
     }
     

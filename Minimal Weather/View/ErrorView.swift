@@ -18,7 +18,7 @@ class ErrorView: UIView {
         return view
     }()
     
-    var isAnimationRunning = false
+    private var isAnimationRunning = false
     
     private var errorLabel: UILabel = {
         let label = UILabel()
@@ -59,7 +59,8 @@ class ErrorView: UIView {
         
     }
     
-    func triggerAnimation(error: Error) {
+    func handleErrorAnimation(error: Error) {
+        guard !isAnimationRunning else {return}
         switch error as! NetworkError {
         case .FetchingError:
             errorLabel.text = "Network Error"
