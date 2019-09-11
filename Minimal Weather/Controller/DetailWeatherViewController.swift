@@ -22,8 +22,6 @@ class DetailWeatherViewController: UIViewController {
     var currentWeatherInfo: WeatherDataModel?
     private var locationService = LocationService.shared
     private var timer = Timer()
-    private var latitude: String?
-    private var longitude: String?
     
     
     //MARK: - Networking
@@ -38,13 +36,18 @@ class DetailWeatherViewController: UIViewController {
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.locationService.delegate = self
-        if let currentView = currentWeatherInfo {
-            title = currentView.name
-            self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
+        if let currentWeather = currentWeatherInfo {
+            title = currentWeather.name
+            self.locationService.delegate = self
+            if currentWeather.isLocationSearch {
+            
+            }
+            self.updateUI(icon: currentWeather.weather[0].icon, timezone: currentWeather.timezone, city: currentWeather.name)
+            
+            
             
             delegate?.updateWeatherDataInStaticTableView(with: self.currentWeatherInfo!)
-//            reloadDataInTime(time: 10, repeats: true, callback: updateData)
+            updateData()
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
                     self.updateData()
@@ -92,18 +95,14 @@ class DetailWeatherViewController: UIViewController {
     }
     
     @objc func updateData() {
-        self.locationService.delegate = self
-        self.locationService.startUpdatingLocation()
+
         //here i'm updating data, when user stay in detail vc
         guard let weatherInfo = currentWeatherInfo else {return}
-        if weatherInfo.isLocationSearch {
-            latitude = "\(weatherInfo.coord.lat)"
-            longitude = "\(weatherInfo.coord.lon)"
-        }
+        
         var query = [String: String]()
         // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
-        if weatherInfo.isLocationSearch && locationService.locationAuthStatus == .alllow && latitude != nil {
-//            query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        if weatherInfo.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil {
+            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             
         } else if weatherInfo.isLocationSearch {
             // if location is off, just back user to city list
@@ -112,6 +111,7 @@ class DetailWeatherViewController: UIViewController {
             // else, just update with name.
             query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
+        print(query)
         fetchingData(with: query)
     }
     
@@ -137,10 +137,14 @@ class DetailWeatherViewController: UIViewController {
 extension DetailWeatherViewController: LocationServiceDelegate {
      // just update latitude and longitude
     func locationManagerGetLocation(latitude: String, longitude: String) {
-        print("Detail vc latitude is: \(latitude)")
-        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        fetchingData(with: query)
+        guard let weatherInfo = currentWeatherInfo else {return}
+        if weatherInfo.isLocationSearch {
+            let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            fetchingData(with: query)
+        }
+        
     }
+
 }
 
 
