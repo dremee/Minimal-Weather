@@ -15,11 +15,15 @@ protocol DetailWeatherDelegate {
     func updateWeatherDataInStaticTableView(with data: WeatherDataModel)
 }
 
-class DetailWeatherViewController: MainLogicViewController {
+class DetailWeatherViewController: UIViewController {
     //Delegate
     var delegate: DetailWeatherDelegate?
     //MARK: - Properties
     var currentWeatherInfo: WeatherDataModel?
+    private var locationService = LocationService.shared
+    private var timer = Timer()
+    private var latitude: String?
+    private var longitude: String?
     
     
     //MARK: - Networking
@@ -37,9 +41,14 @@ class DetailWeatherViewController: MainLogicViewController {
         if let currentView = currentWeatherInfo {
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
-            
+            self.locationService.delegate = self
             delegate?.updateWeatherDataInStaticTableView(with: self.currentWeatherInfo!)
-            reloadDataInTime(time: 10, repeats: true, callback: updateData)
+//            reloadDataInTime(time: 10, repeats: true, callback: updateData)
+            DispatchQueue.main.async {
+                self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
+                    self.updateData()
+                })
+            }
         }
     }
     
@@ -81,11 +90,16 @@ class DetailWeatherViewController: MainLogicViewController {
     }
     
     @objc func updateData() {
+        print("I'm working in detail vc")
         //here i'm updating data, when user stay in detail vc
         guard let weatherInfo = currentWeatherInfo else {return}
+        if weatherInfo.isLocationSearch {
+            latitude = "\(weatherInfo.coord.lat)"
+            longitude = "\(weatherInfo.coord.lon)"
+        }
         var query = [String: String]()
         // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
-        if weatherInfo.isLocationSearch && locationAuthStatus == .alllow {
+        if weatherInfo.isLocationSearch && locationService.locationAuthStatus == .alllow && latitude != nil {
             query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
         } else if weatherInfo.isLocationSearch {
             // if location is off, just back user to city list
@@ -94,9 +108,9 @@ class DetailWeatherViewController: MainLogicViewController {
             // else, just update with name.
             query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
-        
+        print(weatherInfo.isLocationSearch)
         self.weatherInfoController.fetchWeatherRequestController(query: query, success: { [weak self](weatherInfo) in
-            
+            print(query)
             guard let self = self else {return}
             self.currentWeatherInfo?.coord = weatherInfo.coord
             self.currentWeatherInfo?.name = weatherInfo.name
@@ -111,18 +125,20 @@ class DetailWeatherViewController: MainLogicViewController {
                 }
         })
     }
+    
 }
 
 //MARK: - Location Manager Delegate
-extension DetailWeatherViewController {
-
-    
-    // just update latitude and longitude
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations[locations.count - 1]
-        if location.horizontalAccuracy > 0 {
-            latitude = String(location.coordinate.latitude)
-            longitude = String(location.coordinate.longitude)
-        }
+extension DetailWeatherViewController: LocationServiceDelegate {
+     // just update latitude and longitude
+    func locationManagerGetLocation(latitude: String, longitude: String) {
+        self.longitude = longitude
+        self.latitude = latitude
+        print("Detail view latitude: \(latitude)")
     }
 }
+
+
+
+
+

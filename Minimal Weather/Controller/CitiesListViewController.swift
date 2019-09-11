@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 import CoreLocation
 
-class CitiesListViewController: MainLogicViewController {
+class CitiesListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -19,6 +19,10 @@ class CitiesListViewController: MainLogicViewController {
     private var selectedWeather: WeatherDataModel?
     private var cityWeatherList = [WeatherDataModel]()
     private var fileManager = SaveWeatherData()
+    fileprivate var locationService = LocationService.shared
+    fileprivate var latitude: String?
+    fileprivate var longitude: String?
+    fileprivate var timer = Timer()
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
@@ -46,6 +50,11 @@ class CitiesListViewController: MainLogicViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationService.delegate = self
+        //check location status from MainLogicViewController
+        locationService.checkLocationStatus()
+        
         tableView.dataSource = self
         tableView.delegate = self
         //create footer bar, for not display empty cells
@@ -55,15 +64,12 @@ class CitiesListViewController: MainLogicViewController {
         let cellNib = UINib(nibName: "WeatherViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         
-        //check location status from MainLogicViewController
-        checkLocationStatus()
+        
         
         //Create add city button and add it like right bar button item
         let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
         
-        //Init location manager
-        initLocationManager()
         
         //Make safe unwrapping from file manager, and if it exist, update weather
         if let data = fileManager.loadWheatherListCities() {
@@ -75,7 +81,12 @@ class CitiesListViewController: MainLogicViewController {
         
         
         //Reload data every 10 seconds
-        reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
+//        reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
+                self.updateWeather()
+            })
+        }
     }
     
     //MARK: - Navigation
@@ -120,10 +131,11 @@ class CitiesListViewController: MainLogicViewController {
     
     //update weather list
     @objc private func updateWeather() {
-        //We check, does location is work, and if not, delete location row (if it's was)
+//        locationService.checkLocationStatus()
+//        We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()
         
-        //Check, that list is not empty
+//        Check, that list is not empty
         if cityWeatherList.isEmpty {
             self.refreshControl.endRefreshing()
             return
@@ -134,7 +146,7 @@ class CitiesListViewController: MainLogicViewController {
             var query = [String: String]()
             // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
             // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
-            if index == 0 && city.isLocationSearch && locationAuthStatus == .alllow && latitude != nil && longitude != nil {
+            if index == 0 && city.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
                 query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
             } else if index == 0 && city.isLocationSearch {
                 //here we check, that location manager is denied. I think, i will delete firs row here
@@ -143,7 +155,7 @@ class CitiesListViewController: MainLogicViewController {
                 // in all another situations, we just update with city
                 query = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
             }
-            
+        
             self.weatherInfoController.fetchWeatherRequestController(query: query, success: {(weatherInfo) in
                 // here i make flag for first row, that found by location
                 if index == 0 && city.isLocationSearch {
@@ -171,8 +183,8 @@ class CitiesListViewController: MainLogicViewController {
     
     //Delete location row, if location manager is off and location row is exist
     private func updateLocationRow() {
-        checkLocationStatus()
-        if !cityWeatherList.isEmpty && locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
+        locationService.checkLocationStatus()
+        if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
             cityWeatherList.remove(at: 0)
             fileManager.saveWeatherListCities(list: cityWeatherList)
             tableView.reloadData()
@@ -232,40 +244,75 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 //MARK: - Location Manager extension
-extension CitiesListViewController {
+extension CitiesListViewController: LocationServiceDelegate {
     
-    //Location manager delegate
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations[locations.count - 1]
-        if location.horizontalAccuracy > 0 {
-            latitude = String(location.coordinate.latitude)
-            longitude = String(location.coordinate.longitude)
-            let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
-                print("Updating with location")
-                // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
-                var currentWeather = weatherInfo
-                currentWeather.isLocationSearch! = true
-                if self.cityWeatherList.isEmpty{
-                    self.cityWeatherList.append(currentWeather)
-                    self.tableView.reloadData()
-                } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
-                    self.cityWeatherList[0] = currentWeather
-                    let indexPath = IndexPath(row: 0, section: 0)
-                    if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
-                        cell.updateCell(for: weatherInfo)
-                    }
-                    // if list is not empty and top element not found with location
-                } else {
-                    self.cityWeatherList.insert(currentWeather, at: 0)
-                    self.tableView.reloadData()
+    func locationManagerGetLocation(latitude: String, longitude: String) {
+        self.latitude = latitude
+        self.longitude = longitude
+        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
+            // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
+            var currentWeather = weatherInfo
+            currentWeather.isLocationSearch! = true
+            if self.cityWeatherList.isEmpty{
+                self.cityWeatherList.append(currentWeather)
+                self.tableView.reloadData()
+            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
+                self.cityWeatherList[0] = currentWeather
+                let indexPath = IndexPath(row: 0, section: 0)
+                if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
+                    cell.updateCell(for: weatherInfo)
                 }
-                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-            }, failure: { error in
-               print(error)
-            })
-        }
+                // if list is not empty and top element not found with location
+            } else {
+                self.cityWeatherList.insert(currentWeather, at: 0)
+                self.tableView.reloadData()
+            }
+            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+        }, failure: { error in
+            print(error)
+        })
     }
 }
+
+
+    
+
+    
+    
+    //Location manager delegate
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        let location = locations[locations.count - 1]
+//        if location.horizontalAccuracy > 0 {
+//            latitude = String(location.coordinate.latitude)
+//            longitude = String(location.coordinate.longitude)
+//            print("latitude and longitude")
+//            let query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+//            weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
+//                print("Updating with location")
+//                // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
+//                var currentWeather = weatherInfo
+//                currentWeather.isLocationSearch! = true
+//                if self.cityWeatherList.isEmpty{
+//                    self.cityWeatherList.append(currentWeather)
+//                    self.tableView.reloadData()
+//                } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
+//                    self.cityWeatherList[0] = currentWeather
+//                    let indexPath = IndexPath(row: 0, section: 0)
+//                    if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
+//                        cell.updateCell(for: weatherInfo)
+//                    }
+//                    // if list is not empty and top element not found with location
+//                } else {
+//                    self.cityWeatherList.insert(currentWeather, at: 0)
+//                    self.tableView.reloadData()
+//                }
+//                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+//            }, failure: { error in
+//               print(error)
+//            })
+//        }
+//    }
+
 
 
