@@ -51,9 +51,7 @@ class CitiesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationService.delegate = self
-        //check location status from MainLogicViewController
-        locationService.checkLocationStatus()
+        
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -131,6 +129,10 @@ class CitiesListViewController: UIViewController {
     
     //update weather list
     @objc private func updateWeather() {
+        locationService.delegate = self
+        //check location status from MainLogicViewController
+        locationService.checkLocationStatus()
+        locationService.startUpdatingLocation()
 //        locationService.checkLocationStatus()
 //        We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()

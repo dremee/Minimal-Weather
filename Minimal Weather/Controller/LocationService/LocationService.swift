@@ -31,9 +31,13 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-        locationManager.distanceFilter = 100.0
+//        locationManager.distanceFilter = 100.0
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    func startUpdatingLocation() {
         locationManager.startUpdatingLocation()
     }
     

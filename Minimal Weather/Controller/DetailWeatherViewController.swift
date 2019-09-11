@@ -38,10 +38,11 @@ class DetailWeatherViewController: UIViewController {
     //MAKR: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.locationService.delegate = self
         if let currentView = currentWeatherInfo {
             title = currentView.name
             self.updateUI(icon: currentView.weather[0].icon, timezone: currentView.timezone, city: currentView.name)
-            self.locationService.delegate = self
+            
             delegate?.updateWeatherDataInStaticTableView(with: self.currentWeatherInfo!)
 //            reloadDataInTime(time: 10, repeats: true, callback: updateData)
             DispatchQueue.main.async {
@@ -75,6 +76,7 @@ class DetailWeatherViewController: UIViewController {
     
     //MARK: - Helpers
     private func updateUI(icon: String, timezone: Int, city: String) {
+        self.title = city
         self.cityLabel.text = city
         self.currentTimeLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
@@ -90,7 +92,8 @@ class DetailWeatherViewController: UIViewController {
     }
     
     @objc func updateData() {
-        print("I'm working in detail vc")
+        self.locationService.delegate = self
+        self.locationService.startUpdatingLocation()
         //here i'm updating data, when user stay in detail vc
         guard let weatherInfo = currentWeatherInfo else {return}
         if weatherInfo.isLocationSearch {
@@ -100,7 +103,8 @@ class DetailWeatherViewController: UIViewController {
         var query = [String: String]()
         // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
         if weatherInfo.isLocationSearch && locationService.locationAuthStatus == .alllow && latitude != nil {
-            query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+//            query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+            
         } else if weatherInfo.isLocationSearch {
             // if location is off, just back user to city list
             self.navigationController?.popViewController(animated: true)
@@ -108,9 +112,12 @@ class DetailWeatherViewController: UIViewController {
             // else, just update with name.
             query = ["q": weatherInfo.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
-        print(weatherInfo.isLocationSearch)
+        fetchingData(with: query)
+    }
+    
+    //MARK: - Network helper
+    func fetchingData(with query: [String: String]) {
         self.weatherInfoController.fetchWeatherRequestController(query: query, success: { [weak self](weatherInfo) in
-            print(query)
             guard let self = self else {return}
             self.currentWeatherInfo?.coord = weatherInfo.coord
             self.currentWeatherInfo?.name = weatherInfo.name
@@ -118,23 +125,21 @@ class DetailWeatherViewController: UIViewController {
             self.currentWeatherInfo?.weather = weatherInfo.weather
             self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name)
             self.delegate?.updateWeatherDataInStaticTableView(with: weatherInfo)
-            
-            }, failure: { error in
-                DispatchQueue.main.async {
-                    self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)
-                }
-        })
+        }) { (error) in
+            DispatchQueue.main.async {
+                self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)
+            }
+        }
     }
-    
 }
 
 //MARK: - Location Manager Delegate
 extension DetailWeatherViewController: LocationServiceDelegate {
      // just update latitude and longitude
     func locationManagerGetLocation(latitude: String, longitude: String) {
-        self.longitude = longitude
-        self.latitude = latitude
-        print("Detail view latitude: \(latitude)")
+        print("Detail vc latitude is: \(latitude)")
+        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        fetchingData(with: query)
     }
 }
 
