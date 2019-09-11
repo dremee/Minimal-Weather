@@ -133,7 +133,6 @@ class CitiesListViewController: UIViewController {
         //check location status from MainLogicViewController
         locationService.checkLocationStatus()
         locationService.startUpdatingLocation()
-//        locationService.checkLocationStatus()
 //        We check, does location is work, and if not, delete location row (if it's was)
         updateLocationRow()
         
@@ -143,24 +142,19 @@ class CitiesListViewController: UIViewController {
             return
         }
         
-        for (index, city) in cityWeatherList.enumerated() {
+        for (index, weatherData) in cityWeatherList.enumerated() {
             // update only added cities
             var query = [String: String]()
             // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
-            // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
-            if index == 0 && city.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
-                query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            } else if index == 0 && city.isLocationSearch {
-                //here we check, that location manager is denied. I think, i will delete firs row here
+            
+            query = queryHelper(index: index, weatherData: weatherData)
+            if query.isEmpty {
                 continue
-            } else {
-                // in all another situations, we just update with city
-                query = ["q": city.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
             }
         
             self.weatherInfoController.fetchWeatherRequestController(query: query, success: {(weatherInfo) in
                 // here i make flag for first row, that found by location
-                if index == 0 && city.isLocationSearch {
+                if index == 0 && weatherData.isLocationSearch {
                     self.cityWeatherList[index] = weatherInfo
                     self.cityWeatherList[index].isLocationSearch = true
                 } else {
@@ -176,11 +170,20 @@ class CitiesListViewController: UIViewController {
         self.refreshControl.endRefreshing()
     }
     
-    //Actiovating of error view
-    private func runErrorAnimation(error: Error) {
-        DispatchQueue.main.async {
-            self.errorView.handleErrorAnimation(error: error)
+    //MARK: - Update Weather Helpers
+    private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
+        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
+        var query = [String: String]()
+        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && latitude != nil && longitude != nil {
+            query = ["lat": latitude!, "lon": longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        } else if index == 0 && weatherData.isLocationSearch {
+            //here we check, that location manager is denied. I think, i will delete firs row here
+            return query
+        } else {
+            // in all another situations, we just update with city
+            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
         }
+        return query
     }
     
     //Delete location row, if location manager is off and location row is exist
@@ -192,6 +195,15 @@ class CitiesListViewController: UIViewController {
             tableView.reloadData()
         }
     }
+    
+    //Actiovating of error view
+    private func runErrorAnimation(error: Error) {
+        DispatchQueue.main.async {
+            self.errorView.handleErrorAnimation(error: error)
+        }
+    }
+    
+    
 
 }
 
