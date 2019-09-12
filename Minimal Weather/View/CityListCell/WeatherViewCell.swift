@@ -27,10 +27,10 @@ class WeatherViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func updateCell(for result: WeatherDataModel) {
-        cityLabel.text = result.name
-        weatherLabel.text = "\(result.main.celsius)"
-        timeLabel.text = Formatter.changeDateForLocationTime(for: result.timezone)
+    func updateCell(for result: WeatherDataViewModel) {
+        cityLabel.text = result.city
+        weatherLabel.text = result.tempreture
+        timeLabel.text = result.time
     }
     
 }

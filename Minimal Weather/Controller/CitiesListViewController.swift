@@ -18,11 +18,12 @@ class CitiesListViewController: UIViewController {
     //MARK: - properties
     private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
+    private var selectedWeatherIndex: Int?
     private var cityWeatherList = [WeatherDataModel]()
     private var fileManager = SaveWeatherData()
     fileprivate var locationService = LocationService.shared
-
     fileprivate var timer = Timer()
+    var viewModel = [WeatherDataViewModel]()
     
     
     //Create refresh control
@@ -52,7 +53,7 @@ class CitiesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        locationService.delegate = self
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -75,7 +76,6 @@ class CitiesListViewController: UIViewController {
             cityWeatherList = data
             updateWeather()
         }
-        
         setupErrorView()
         
         
@@ -88,11 +88,36 @@ class CitiesListViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //Check, if user disabled location manager and turn on int, while app is running
+        if locationService.delegate == nil {
+            locationService.delegate = self
+        }
+        
+        //check, if app is launch before, we update data form detail vc here
+        let launchBefore = UserDefaults.standard.bool(forKey: "launchBefore")
+        if launchBefore {
+            print("Updating in viewwillappear")
+            if let data = fileManager.loadWheatherListCities() {
+                cityWeatherList = data
+                updateWeather()
+            }
+        } else {
+            UserDefaults.standard.set(true, forKey: "launchBefore")
+        }
+        
+    }
+    
+    
     //MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue" {
             if let vc = segue.destination as? DetailWeatherViewController {
                 vc.currentWeatherInfo = selectedWeather
+                vc.weatherList = cityWeatherList
+                vc.currentWeatherIndex = selectedWeatherIndex
             }
         }
     }
@@ -221,13 +246,15 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         cell.selectedBackgroundView = selectedView
         
         let currentView = cityWeatherList[indexPath.row]
-        cell.updateCell(for: currentView)
+        let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentView)
+        cell.updateCell(for: weatherDataViewModel)
         return cell
     }
     
     //MARK: - Table view delegate
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         selectedWeather = cityWeatherList[indexPath.row]
+        selectedWeatherIndex = indexPath.row
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
     }
@@ -272,8 +299,9 @@ extension CitiesListViewController: LocationServiceDelegate {
             } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
                 self.cityWeatherList[0] = currentWeather
                 let indexPath = IndexPath(row: 0, section: 0)
+                let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentWeather)
                 if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
-                    cell.updateCell(for: weatherInfo)
+                    cell.updateCell(for: weatherDataViewModel)
                 }
                 // if list is not empty and top element not found with location
             } else {

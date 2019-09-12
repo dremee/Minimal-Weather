@@ -22,10 +22,9 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     var currentLocation = CLLocation()
     
-    static let shared: LocationService = {
-        let instance = LocationService()
-        return instance
-    }()
+    static let shared = LocationService()
+        
+    
     
     override init() {
         super.init()

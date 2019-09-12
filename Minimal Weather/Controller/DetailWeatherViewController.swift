@@ -19,9 +19,13 @@ class DetailWeatherViewController: UIViewController {
     //Delegate
     var delegate: DetailWeatherDelegate?
     //MARK: - Properties
-    var currentWeatherInfo: WeatherDataModel?
     private var locationService = LocationService.shared
     private var timer = Timer()
+    private var fileManager = SaveWeatherData()
+    var currentWeatherInfo: WeatherDataModel?
+    var weatherList = [WeatherDataModel]()
+    var currentWeatherIndex: Int?
+    var isLocation: Bool = false
     
     
     //MARK: - Networking
@@ -95,7 +99,6 @@ class DetailWeatherViewController: UIViewController {
     }
     
     @objc func updateData() {
-
         //here i'm updating data, when user stay in detail vc
         guard let weatherInfo = currentWeatherInfo else {return}
         
@@ -103,7 +106,7 @@ class DetailWeatherViewController: UIViewController {
         // here i check, if data get with location, and check, if core location is on. I don't wanna stay old location information, because it can be confused for user
         if weatherInfo.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil {
             query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-            
+            isLocation = true
         } else if weatherInfo.isLocationSearch {
             // if location is off, just back user to city list
             self.navigationController?.popViewController(animated: true)
@@ -116,15 +119,21 @@ class DetailWeatherViewController: UIViewController {
     }
     
     //MARK: - Network helper
-    func fetchingData(with query: [String: String]) {
+    private func fetchingData(with query: [String: String]) {
         self.weatherInfoController.fetchWeatherRequestController(query: query, success: { [weak self](weatherInfo) in
-            guard let self = self else {return}
-            self.currentWeatherInfo?.coord = weatherInfo.coord
-            self.currentWeatherInfo?.name = weatherInfo.name
-            self.currentWeatherInfo?.main = weatherInfo.main
-            self.currentWeatherInfo?.weather = weatherInfo.weather
+            guard let self = self, var currentWeatherInfo = self.currentWeatherInfo else {return}
+            currentWeatherInfo.coord = weatherInfo.coord
+            currentWeatherInfo.name = weatherInfo.name
+            currentWeatherInfo.main = weatherInfo.main
+            currentWeatherInfo.weather = weatherInfo.weather
+            currentWeatherInfo.isLocationSearch = self.isLocation
             self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name)
             self.delegate?.updateWeatherDataInStaticTableView(with: weatherInfo)
+            
+            //Save data
+            guard let currentWeatherIndex = self.currentWeatherIndex else {return}
+            self.weatherList[currentWeatherIndex] = currentWeatherInfo
+            self.fileManager.saveWeatherListCities(list: self.weatherList)
         }) { (error) in
             DispatchQueue.main.async {
                 self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)

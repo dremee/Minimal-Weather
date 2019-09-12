@@ -16,9 +16,9 @@ enum LocationAuthStatus {
     
     
 enum NetworkError: Error {
-        case FetchingError
-        case DecodingError
-    }
+    case FetchingError
+    case DecodingError
+}
 
 
 
