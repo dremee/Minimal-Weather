@@ -25,6 +25,8 @@ class CitiesListViewController: UIViewController {
     fileprivate var timer = Timer()
 //    var viewModel = [WeatherDataViewModel]()
     
+    var dataUpdater = DataUpdater.shared
+    
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
@@ -71,10 +73,11 @@ class CitiesListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
-        if let data = fileManager.loadWheatherListCities() {
-            cityWeatherList = data
-            updateWeather()
-        }
+//        if let data = fileManager.loadWheatherListCities() {
+//            cityWeatherList = data
+//            updateWeather()
+//        }
+        dataUpdater.loadData()
         setupErrorView()
         
         
@@ -131,16 +134,15 @@ class CitiesListViewController: UIViewController {
                 if let textField = alert?.textFields![0].text!, textField.count > 0 {
                     var findCity = textField.trimmingCharacters(in: .whitespaces)
                     findCity = findCity.replacingOccurrences(of: " ", with: "+")
-                    let query = ["q": findCity, "appid": "6ba713b340e3501610cdeb5793382e29"]
-                    self.weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
-                        
-                        self.cityWeatherList.append(weatherInfo)
-                        self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-                        self.tableView.reloadData()
-                        
-                    }, failure: {error in
+                    
+                    self.dataUpdater.addData(with: findCity, success: {
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    }, failure: { error in
                         self.runErrorAnimation(error: error)
                     })
+                    
                 }
             }
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -166,49 +168,50 @@ class CitiesListViewController: UIViewController {
             return
         }
         
-        for (index, weatherData) in cityWeatherList.enumerated() {
-            // update only added cities
-            var query = [String: String]()
-            // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
-            
-            query = queryHelper(index: index, weatherData: weatherData)
-            if query.isEmpty {
-                continue
-            }
-        
-            self.weatherInfoController.fetchWeatherRequestController(query: query, success: {(weatherInfo) in
-                // here i make flag for first row, that found by location
-                if index == 0 && weatherData.isLocationSearch {
-                    self.cityWeatherList[index] = weatherInfo
-                    self.cityWeatherList[index].isLocationSearch = true
-                } else {
-                    //default flag is false
-                    self.cityWeatherList[index] = weatherInfo
-                }
-                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-            }, failure: { error in
-                self.runErrorAnimation(error: error)
-            })
-        }
+        dataUpdater.updateData()
+//        for (index, weatherData) in cityWeatherList.enumerated() {
+//            // update only added cities
+//            var query = [String: String]()
+//            // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
+//
+//            query = queryHelper(index: index, weatherData: weatherData)
+//            if query.isEmpty {
+//                continue
+//            }
+//
+//            self.weatherInfoController.fetchWeatherRequestController(query: query, success: {(weatherInfo) in
+//                // here i make flag for first row, that found by location
+//                if index == 0 && weatherData.isLocationSearch {
+//                    self.cityWeatherList[index] = weatherInfo
+//                    self.cityWeatherList[index].isLocationSearch = true
+//                } else {
+//                    //default flag is false
+//                    self.cityWeatherList[index] = weatherInfo
+//                }
+//                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+//            }, failure: { error in
+//                self.runErrorAnimation(error: error)
+//            })
+//        }
         self.tableView.reloadData()
         self.refreshControl.endRefreshing()
     }
     
     //MARK: - Update Weather Helpers
-    private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
-        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
-        var query = [String: String]()
-        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
-            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        } else if index == 0 && weatherData.isLocationSearch {
-            //here we check, that location manager is denied. I think, i will delete firs row here
-            return query
-        } else {
-            // in all another situations, we just update with city
-            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        }
-        return query
-    }
+//    private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
+//        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
+//        var query = [String: String]()
+//        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
+//            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+//        } else if index == 0 && weatherData.isLocationSearch {
+//            //here we check, that location manager is denied. I think, i will delete firs row here
+//            return query
+//        } else {
+//            // in all another situations, we just update with city
+//            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+//        }
+//        return query
+//    }
     
     //Delete location row, if location manager is off and location row is exist
     private func updateLocationRow() {
@@ -235,7 +238,8 @@ class CitiesListViewController: UIViewController {
 extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cityWeatherList.count
+//        return cityWeatherList.count
+        return dataUpdater.cityWeatherList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -245,14 +249,14 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         selectedView.backgroundColor = .darkGray
         cell.selectedBackgroundView = selectedView
         
-        let currentView = WeatherDataFactory.viewModel(for: cityWeatherList[indexPath.row])
+        let currentView = WeatherDataFactory.viewModel(for: dataUpdater.cityWeatherList[indexPath.row])
         cell.updateCell(for: currentView)
         return cell
     }
     
     //MARK: - Table view delegate
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        selectedWeather = cityWeatherList[indexPath.row]
+        selectedWeather = dataUpdater.cityWeatherList[indexPath.row]
         selectedWeatherIndex = indexPath.row
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
@@ -266,7 +270,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //If first row get with location, don't access user to delete it
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 && cityWeatherList[0].isLocationSearch {
+        if indexPath.row == 0 && dataUpdater.cityWeatherList[0].isLocationSearch {
             return false
         }
         return true
@@ -274,10 +278,11 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.cityWeatherList.remove(at: indexPath.row)
-//            self.viewModel.remove(at: indexPath.row)
+//            self.cityWeatherList.remove(at: indexPath.row)
+////            self.viewModel.remove(at: indexPath.row)
+            dataUpdater.deleteData(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-            fileManager.saveWeatherListCities(list: cityWeatherList)
+//            fileManager.saveWeatherListCities(list: cityWeatherList)
             self.tableView.reloadData()
         }
     }

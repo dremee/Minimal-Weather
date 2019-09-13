@@ -32,6 +32,4 @@ class WeatherInfoTableViewController: UITableViewController, DetailWeatherDelega
         windSpeedLabel.text = data.windSpeed
         windDegreeLabel.text = data.windDegree
     }
-
-
 }
