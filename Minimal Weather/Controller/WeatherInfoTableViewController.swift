@@ -25,12 +25,12 @@ class WeatherInfoTableViewController: UITableViewController, DetailWeatherDelega
 
     
     //MARK: - WeatherDataDelegate
-    func updateWeatherDataInStaticTableView(with data: WeatherDataModel) {
-        currentWeatherTempLabel.text = "\(data.main.celsius)"
-        minimunTempLabel.text = "\(data.main.minCelsius)"
-        maximumTempLabel.text = "\(data.main.maxCelsius)"
-        windSpeedLabel.text = "\(data.wind.windSpeed)"
-        windDegreeLabel.text = data.wind.windDegree?.windDegreeRepresentation
+    func updateWeatherDataInStaticTableView(with data: DetailWeatherInfoDataViewModel) {
+        currentWeatherTempLabel.text = data.temp
+        minimunTempLabel.text = data.minTemp
+        maximumTempLabel.text = data.maxTemp
+        windSpeedLabel.text = data.windSpeed
+        windDegreeLabel.text = data.windDegree
     }
 
 

@@ -13,3 +13,4 @@ struct WeatherDataViewModel {
     let tempreture: String
     let time: String
 }
+

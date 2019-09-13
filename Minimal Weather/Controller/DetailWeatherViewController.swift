@@ -12,7 +12,7 @@ import CoreLocation
 
 //MARK: - Protocol to delegate data
 protocol DetailWeatherDelegate {
-    func updateWeatherDataInStaticTableView(with data: WeatherDataModel)
+    func updateWeatherDataInStaticTableView(with data: DetailWeatherInfoDataViewModel)
 }
 
 class DetailWeatherViewController: UIViewController {
@@ -26,7 +26,7 @@ class DetailWeatherViewController: UIViewController {
     var weatherList = [WeatherDataModel]()
     var currentWeatherIndex: Int?
     var isLocation: Bool = false
-    
+    var weatherViewModel: DetailWeatherDataViewModel?
     
     //MARK: - Networking
     private let weatherInfoController = WeatherInfoController()
@@ -46,11 +46,11 @@ class DetailWeatherViewController: UIViewController {
             if currentWeather.isLocationSearch {
             
             }
-            self.updateUI(icon: currentWeather.weather[0].icon, timezone: currentWeather.timezone, city: currentWeather.name)
+            self.updateUI(weatherData: weatherViewModel!)
             
             
             
-            delegate?.updateWeatherDataInStaticTableView(with: self.currentWeatherInfo!)
+            delegate?.updateWeatherDataInStaticTableView(with: self.weatherViewModel!.detailWeatherInfoDataViewModel)
             updateData()
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
@@ -82,12 +82,12 @@ class DetailWeatherViewController: UIViewController {
 
     
     //MARK: - Helpers
-    private func updateUI(icon: String, timezone: Int, city: String) {
-        self.title = city
-        self.cityLabel.text = city
-        self.currentTimeLabel.text = Formatter.changeDateForLocationTimeZone(for: timezone)
+    private func updateUI(weatherData: DetailWeatherDataViewModel) {
+        self.title = weatherData.city
+        self.cityLabel.text = weatherData.city
+        self.currentTimeLabel.text = weatherData.time
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
-        let imageURL = URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png")
+        let imageURL = URL(string: "https://openweathermap.org/img/wn/\(weatherData.icon)@2x.png")
         //Get image data in background queue
         DispatchQueue.global(qos: .background).async {
             guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
@@ -127,8 +127,9 @@ class DetailWeatherViewController: UIViewController {
             currentWeatherInfo.main = weatherInfo.main
             currentWeatherInfo.weather = weatherInfo.weather
             currentWeatherInfo.isLocationSearch = self.isLocation
-            self.updateUI(icon: weatherInfo.weather[0].icon, timezone: weatherInfo.timezone, city: weatherInfo.name)
-            self.delegate?.updateWeatherDataInStaticTableView(with: weatherInfo)
+            
+            self.updateUI(weatherData: self.weatherViewModel!)
+            self.delegate?.updateWeatherDataInStaticTableView(with: self.weatherViewModel!.detailWeatherInfoDataViewModel)
             
             //Save data
             guard let currentWeatherIndex = self.currentWeatherIndex else {return}
@@ -136,7 +137,7 @@ class DetailWeatherViewController: UIViewController {
             self.fileManager.saveWeatherListCities(list: self.weatherList)
         }) { (error) in
             DispatchQueue.main.async {
-                self.updateUI(icon: self.currentWeatherInfo!.weather[0].icon, timezone: self.currentWeatherInfo!.timezone, city: self.currentWeatherInfo!.name)
+                self.updateUI(weatherData: self.weatherViewModel!)
             }
         }
     }

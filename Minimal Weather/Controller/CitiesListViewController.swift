@@ -23,7 +23,7 @@ class CitiesListViewController: UIViewController {
     private var fileManager = SaveWeatherData()
     fileprivate var locationService = LocationService.shared
     fileprivate var timer = Timer()
-    var viewModel = [WeatherDataViewModel]()
+//    var viewModel = [WeatherDataViewModel]()
     
     
     //Create refresh control
@@ -69,7 +69,6 @@ class CitiesListViewController: UIViewController {
         //Create add city button and add it like right bar button item
         let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
-        
         
         //Make safe unwrapping from file manager, and if it exist, update weather
         if let data = fileManager.loadWheatherListCities() {
@@ -118,6 +117,7 @@ class CitiesListViewController: UIViewController {
                 vc.currentWeatherInfo = selectedWeather
                 vc.weatherList = cityWeatherList
                 vc.currentWeatherIndex = selectedWeatherIndex
+                vc.weatherViewModel = WeatherDataFactory.detailViewModel(for: selectedWeather!)
             }
         }
     }
@@ -245,9 +245,8 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         selectedView.backgroundColor = .darkGray
         cell.selectedBackgroundView = selectedView
         
-        let currentView = cityWeatherList[indexPath.row]
-        let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentView)
-        cell.updateCell(for: weatherDataViewModel)
+        let currentView = WeatherDataFactory.viewModel(for: cityWeatherList[indexPath.row])
+        cell.updateCell(for: currentView)
         return cell
     }
     
@@ -276,6 +275,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             self.cityWeatherList.remove(at: indexPath.row)
+//            self.viewModel.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
             fileManager.saveWeatherListCities(list: cityWeatherList)
             self.tableView.reloadData()
