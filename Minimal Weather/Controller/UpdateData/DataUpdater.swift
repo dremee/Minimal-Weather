@@ -11,7 +11,7 @@ import Foundation
 protocol DataUpdaterProtocol {
     var cityWeatherList: [WeatherDataModel] {get}
     func loadData()
-    func updateData()
+    func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ())
     func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ())
     func deleteData(at index: Int)
 }
@@ -33,7 +33,10 @@ class DataUpdater: DataUpdaterProtocol {
         cityWeatherList = data
     }
     
-    func updateData() {
+    func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ()) {
+        
+        updateLocationRow()
+        
         
         for (index, weatherData) in cityWeatherList.enumerated() {
             var query = [String: String]()
@@ -54,14 +57,16 @@ class DataUpdater: DataUpdaterProtocol {
                     self.cityWeatherList[index] = weatherInfo
                 }
                 self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+                success()
             }, failure: { error in
-                
+                failure(error)
             })
         }
     }
     
     //MARK: - Helper for update data
     private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
+        
         // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
         var query = [String: String]()
         if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
@@ -90,5 +95,13 @@ class DataUpdater: DataUpdaterProtocol {
     func deleteData(at index: Int) {
         self.cityWeatherList.remove(at: index)
         fileManager.saveWeatherListCities(list: self.cityWeatherList)
+    }
+    
+    private func updateLocationRow() {
+        locationService.checkLocationStatus()
+        if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
+            cityWeatherList.remove(at: 0)
+            fileManager.saveWeatherListCities(list: cityWeatherList)
+        }
     }
 }

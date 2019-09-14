@@ -158,17 +158,22 @@ class CitiesListViewController: UIViewController {
     //update weather list
     @objc private func updateWeather() {
         //check location status from MainLogicViewController
-        locationService.checkLocationStatus()
+//        locationService.checkLocationStatus()
 //        We check, does location is work, and if not, delete location row (if it's was)
-        updateLocationRow()
         
 //        Check, that list is not empty
-        if cityWeatherList.isEmpty {
-            self.refreshControl.endRefreshing()
-            return
-        }
+//        if cityWeatherList.isEmpty {
+//            self.refreshControl.endRefreshing()
+//            return
+//        }
         
-        dataUpdater.updateData()
+        dataUpdater.updateData(success: {
+            self.tableView.reloadData()
+            self.refreshControl.endRefreshing()
+        }) { (error) in
+            self.runErrorAnimation(error: error)
+            self.runErrorAnimation(error: error)
+        }
 //        for (index, weatherData) in cityWeatherList.enumerated() {
 //            // update only added cities
 //            var query = [String: String]()
@@ -193,8 +198,8 @@ class CitiesListViewController: UIViewController {
 //                self.runErrorAnimation(error: error)
 //            })
 //        }
-        self.tableView.reloadData()
-        self.refreshControl.endRefreshing()
+//        self.tableView.reloadData()
+//        self.refreshControl.endRefreshing()
     }
     
     //MARK: - Update Weather Helpers
@@ -214,14 +219,14 @@ class CitiesListViewController: UIViewController {
 //    }
     
     //Delete location row, if location manager is off and location row is exist
-    private func updateLocationRow() {
-        locationService.checkLocationStatus()
-        if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
-            cityWeatherList.remove(at: 0)
-            fileManager.saveWeatherListCities(list: cityWeatherList)
-            tableView.reloadData()
-        }
-    }
+//    private func updateLocationRow() {
+//        locationService.checkLocationStatus()
+//        if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
+//            cityWeatherList.remove(at: 0)
+//            fileManager.saveWeatherListCities(list: cityWeatherList)
+//            tableView.reloadData()
+//        }
+//    }
     
     //Actiovating of error view
     private func runErrorAnimation(error: Error) {
