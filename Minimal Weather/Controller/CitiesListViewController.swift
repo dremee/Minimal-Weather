@@ -16,14 +16,8 @@ class CitiesListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - properties
-    private var selectedWeather: WeatherDataModel?
     private var selectedWeatherIndex: Int?
-    private var cityWeatherList = [WeatherDataModel]()
-    private var fileManager = SaveWeatherData()
-    fileprivate var locationService = LocationService.shared
     fileprivate var timer = Timer()
-//    var viewModel = [WeatherDataViewModel]()
-    
     var dataUpdater = DataUpdater.shared
     
     
@@ -33,6 +27,13 @@ class CitiesListViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(updateWeather), for: .valueChanged)
         refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
         return refreshControl
+    }()
+    
+    //MARK: - Views
+    fileprivate let selectedGrayView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.darkGray
+        return view
     }()
     
     // add error view and setup it
@@ -53,9 +54,7 @@ class CitiesListViewController: UIViewController {
     //MARK: - View Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        locationService.delegate = self
-        
+        //table view settings
         tableView.dataSource = self
         tableView.delegate = self
         //create footer bar, for not display empty cells
@@ -66,22 +65,18 @@ class CitiesListViewController: UIViewController {
         tableView.register(cellNib, forCellReuseIdentifier: "WeatherViewCell")
         
         
-        
         //Create add city button and add it like right bar button item
         let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
-//        if let data = fileManager.loadWheatherListCities() {
-//            cityWeatherList = data
-//            updateWeather()
-//        }
-        dataUpdater.loadData()
+        dataUpdater.loadData {
+            self.updateWeather()
+        }
         setupErrorView()
         
         
         //Reload data every 10 seconds
-//        reloadDataInTime(time: 10, repeats: true, callback: updateWeather)
         DispatchQueue.main.async {
             self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
                 self.updateWeather()
@@ -107,10 +102,6 @@ class CitiesListViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue" {
             if let vc = segue.destination as? DetailWeatherViewController {
-//                vc.currentWeatherInfo = selectedWeather
-//                vc.weatherList = cityWeatherList
-//                vc.currentWeatherIndex = selectedWeatherIndex
-//                vc.weatherViewModel = WeatherDataFactory.detailViewModel(for: selectedWeather!)
                 vc.currentWeatherIndex = selectedWeatherIndex
             }
         }
@@ -148,15 +139,6 @@ class CitiesListViewController: UIViewController {
     
     //update weather list
     @objc private func updateWeather() {
-        //check location status from MainLogicViewController
-//        locationService.checkLocationStatus()
-//        We check, does location is work, and if not, delete location row (if it's was)
-        
-//        Check, that list is not empty
-//        if cityWeatherList.isEmpty {
-//            self.refreshControl.endRefreshing()
-//            return
-//        }
         
         dataUpdater.updateData(success: {
             self.tableView.reloadData()
@@ -165,59 +147,7 @@ class CitiesListViewController: UIViewController {
             self.runErrorAnimation(error: error)
             self.runErrorAnimation(error: error)
         }
-//        for (index, weatherData) in cityWeatherList.enumerated() {
-//            // update only added cities
-//            var query = [String: String]()
-//            // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
-//
-//            query = queryHelper(index: index, weatherData: weatherData)
-//            if query.isEmpty {
-//                continue
-//            }
-//
-//            self.weatherInfoController.fetchWeatherRequestController(query: query, success: {(weatherInfo) in
-//                // here i make flag for first row, that found by location
-//                if index == 0 && weatherData.isLocationSearch {
-//                    self.cityWeatherList[index] = weatherInfo
-//                    self.cityWeatherList[index].isLocationSearch = true
-//                } else {
-//                    //default flag is false
-//                    self.cityWeatherList[index] = weatherInfo
-//                }
-//                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-//            }, failure: { error in
-//                self.runErrorAnimation(error: error)
-//            })
-//        }
-//        self.tableView.reloadData()
-//        self.refreshControl.endRefreshing()
     }
-    
-    //MARK: - Update Weather Helpers
-//    private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
-//        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
-//        var query = [String: String]()
-//        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
-//            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-//        } else if index == 0 && weatherData.isLocationSearch {
-//            //here we check, that location manager is denied. I think, i will delete firs row here
-//            return query
-//        } else {
-//            // in all another situations, we just update with city
-//            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-//        }
-//        return query
-//    }
-    
-    //Delete location row, if location manager is off and location row is exist
-//    private func updateLocationRow() {
-//        locationService.checkLocationStatus()
-//        if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
-//            cityWeatherList.remove(at: 0)
-//            fileManager.saveWeatherListCities(list: cityWeatherList)
-//            tableView.reloadData()
-//        }
-//    }
     
     //Actiovating of error view
     private func runErrorAnimation(error: Error) {
@@ -241,9 +171,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherViewCell", for: indexPath) as! WeatherViewCell
         //Change selected view to dark grey
-        let selectedView = UIView()
-        selectedView.backgroundColor = .darkGray
-        cell.selectedBackgroundView = selectedView
+        cell.selectedBackgroundView = selectedGrayView
         
         let currentView = WeatherDataFactory.viewModel(for: dataUpdater.cityWeatherList[indexPath.row])
         cell.updateCell(for: currentView)
@@ -252,7 +180,6 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //MARK: - Table view delegate
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        selectedWeather = dataUpdater.cityWeatherList[indexPath.row]
         selectedWeatherIndex = indexPath.row
         performSegue(withIdentifier: "ShowDetailSegue", sender: nil)
         return indexPath
@@ -274,47 +201,14 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-//            self.cityWeatherList.remove(at: indexPath.row)
-////            self.viewModel.remove(at: indexPath.row)
             dataUpdater.deleteData(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
-//            fileManager.saveWeatherListCities(list: cityWeatherList)
             self.tableView.reloadData()
         }
     }
 }
 
-//MARK: - Location Manager extension
-//extension CitiesListViewController: LocationServiceDelegate {
-//
-//    func locationManagerGetLocation(latitude: String, longitude: String) {
-//
-//        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
-//        weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
-//            // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
-//            var currentWeather = weatherInfo
-//            currentWeather.isLocationSearch! = true
-//            if self.cityWeatherList.isEmpty{
-//                self.cityWeatherList.append(currentWeather)
-//                self.tableView.reloadData()
-//            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
-//                self.cityWeatherList[0] = currentWeather
-//                let indexPath = IndexPath(row: 0, section: 0)
-//                let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentWeather)
-//                if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
-//                    cell.updateCell(for: weatherDataViewModel)
-//                }
-//                // if list is not empty and top element not found with location
-//            } else {
-//                self.cityWeatherList.insert(currentWeather, at: 0)
-//                self.tableView.reloadData()
-//            }
-//            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-//        }, failure: { error in
-//            print(error)
-//        })
-//    }
-//}
+
 
 
 

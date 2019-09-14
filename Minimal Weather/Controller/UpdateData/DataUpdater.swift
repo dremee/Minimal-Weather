@@ -10,7 +10,7 @@ import Foundation
 
 protocol DataUpdaterProtocol {
     var cityWeatherList: [WeatherDataModel] {get}
-    func loadData()
+    func loadData(success: @escaping () -> ())
     func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ())
     func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ())
     func deleteData(at index: Int)
@@ -30,20 +30,17 @@ class DataUpdater: DataUpdaterProtocol {
     //Make it singleton
     static let shared: DataUpdater = DataUpdater()
     
-    func loadData() {
+    func loadData(success: @escaping ()-> ()) {
         guard let data = fileManager.loadWheatherListCities() else {return}
         cityWeatherList = data
+        success()
     }
     
     func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ()) {
-        
         updateLocationRow()
-        
-        
         for (index, weatherData) in cityWeatherList.enumerated() {
             var query = [String: String]()
             // here we need to update all data. But, we need undeestand, what we need update all rows, include location row.
-            
             query = queryHelper(index: index, weatherData: weatherData)
             if query.isEmpty {
                 continue
@@ -67,21 +64,7 @@ class DataUpdater: DataUpdaterProtocol {
     }
     
     //MARK: - Helper for update data
-    private func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
-        
-        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
-        var query = [String: String]()
-        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
-            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        } else if index == 0 && weatherData.isLocationSearch {
-            //here we check, that location manager is denied. I think, i will delete firs row here
-            return query
-        } else {
-            // in all another situations, we just update with city
-            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        }
-        return query
-    }
+    
     
     func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ()) {
         let query = ["q": city, "appid": "6ba713b340e3501610cdeb5793382e29"]
@@ -128,8 +111,25 @@ class DataUpdater: DataUpdaterProtocol {
     }
 }
 
+//MARK: - Helper query for update data
+extension DataUpdater {
+    fileprivate func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
+        // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
+        var query = [String: String]()
+        if index == 0 && weatherData.isLocationSearch && locationService.locationAuthStatus == .alllow && locationService.latitude != nil && locationService.longitude != nil {
+            query = ["lat": locationService.latitude!, "lon": locationService.longitude!, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        } else if index == 0 && weatherData.isLocationSearch {
+            //here we check, that location manager is denied. I think, i will delete firs row here
+            return query
+        } else {
+            // in all another situations, we just update with city
+            query = ["q": weatherData.name, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        }
+        return query
+    }
+}
+
 extension DataUpdater: LocationServiceDelegate {
-    
     func locationManagerGetLocation(latitude: String, longitude: String) {
         print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")
         let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
