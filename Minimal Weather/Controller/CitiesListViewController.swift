@@ -16,7 +16,6 @@ class CitiesListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - properties
-    private var weatherInfoController = WeatherInfoController()
     private var selectedWeather: WeatherDataModel?
     private var selectedWeatherIndex: Int?
     private var cityWeatherList = [WeatherDataModel]()
@@ -92,20 +91,11 @@ class CitiesListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        //Check, if user disabled location manager and turn on int, while app is running
-        if locationService.delegate == nil {
-//            locationService.delegate = self
-        }
-        
         //check, if app is launch before, we update data form detail vc here
         let launchBefore = UserDefaults.standard.bool(forKey: "launchBefore")
         if launchBefore {
             print("Updating in viewwillappear")
-            if let data = fileManager.loadWheatherListCities() {
-                cityWeatherList = data
-                updateWeather()
-            }
+            self.updateWeather()
         } else {
             UserDefaults.standard.set(true, forKey: "launchBefore")
         }
@@ -117,10 +107,11 @@ class CitiesListViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetailSegue" {
             if let vc = segue.destination as? DetailWeatherViewController {
-                vc.currentWeatherInfo = selectedWeather
-                vc.weatherList = cityWeatherList
+//                vc.currentWeatherInfo = selectedWeather
+//                vc.weatherList = cityWeatherList
+//                vc.currentWeatherIndex = selectedWeatherIndex
+//                vc.weatherViewModel = WeatherDataFactory.detailViewModel(for: selectedWeather!)
                 vc.currentWeatherIndex = selectedWeatherIndex
-                vc.weatherViewModel = WeatherDataFactory.detailViewModel(for: selectedWeather!)
             }
         }
     }
