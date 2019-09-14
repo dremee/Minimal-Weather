@@ -61,6 +61,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
     
     private func updateLocation(latitude: String, longitude: String) {
         guard let delegate = self.delegate else {return}
+        print("Location service lat: \(latitude), lon: \(longitude)")
         delegate.locationManagerGetLocation(latitude: latitude, longitude: longitude)
     }
     

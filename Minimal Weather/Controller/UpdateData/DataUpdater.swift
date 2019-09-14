@@ -23,7 +23,9 @@ class DataUpdater: DataUpdaterProtocol {
     private let fileManager = SaveWeatherData()
     var cityWeatherList = [WeatherDataModel]()
     
-    private init() {}
+    private init() {
+        self.locationService.delegate = self
+    }
     
     //Make it singleton
     static let shared: DataUpdater = DataUpdater()
@@ -92,6 +94,26 @@ class DataUpdater: DataUpdaterProtocol {
         })
     }
     
+    fileprivate func updateLocationRow(query: [String: String]) {
+        weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
+            var currentWeather = weatherInfo
+            currentWeather.isLocationSearch! = true
+            if self.cityWeatherList.isEmpty{
+                self.cityWeatherList.append(currentWeather)
+                
+            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
+                self.cityWeatherList[0] = currentWeather
+                
+            } else {
+                self.cityWeatherList.insert(currentWeather, at: 0)
+                
+            }
+            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+        }, failure: { error in
+            
+        })
+    }
+    
     func deleteData(at index: Int) {
         self.cityWeatherList.remove(at: index)
         fileManager.saveWeatherListCities(list: self.cityWeatherList)
@@ -103,5 +125,14 @@ class DataUpdater: DataUpdaterProtocol {
             cityWeatherList.remove(at: 0)
             fileManager.saveWeatherListCities(list: cityWeatherList)
         }
+    }
+}
+
+extension DataUpdater: LocationServiceDelegate {
+    
+    func locationManagerGetLocation(latitude: String, longitude: String) {
+        print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")
+        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+        updateLocationRow(query: query)
     }
 }

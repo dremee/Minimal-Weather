@@ -55,7 +55,7 @@ class CitiesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationService.delegate = self
+//        locationService.delegate = self
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -95,7 +95,7 @@ class CitiesListViewController: UIViewController {
         
         //Check, if user disabled location manager and turn on int, while app is running
         if locationService.delegate == nil {
-            locationService.delegate = self
+//            locationService.delegate = self
         }
         
         //check, if app is launch before, we update data form detail vc here
@@ -294,36 +294,36 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 //MARK: - Location Manager extension
-extension CitiesListViewController: LocationServiceDelegate {
-    
-    func locationManagerGetLocation(latitude: String, longitude: String) {
-
-        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
-        weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
-            // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
-            var currentWeather = weatherInfo
-            currentWeather.isLocationSearch! = true
-            if self.cityWeatherList.isEmpty{
-                self.cityWeatherList.append(currentWeather)
-                self.tableView.reloadData()
-            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
-                self.cityWeatherList[0] = currentWeather
-                let indexPath = IndexPath(row: 0, section: 0)
-                let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentWeather)
-                if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
-                    cell.updateCell(for: weatherDataViewModel)
-                }
-                // if list is not empty and top element not found with location
-            } else {
-                self.cityWeatherList.insert(currentWeather, at: 0)
-                self.tableView.reloadData()
-            }
-            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
-        }, failure: { error in
-            print(error)
-        })
-    }
-}
+//extension CitiesListViewController: LocationServiceDelegate {
+//
+//    func locationManagerGetLocation(latitude: String, longitude: String) {
+//
+//        let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
+//        weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
+//            // We check, if we already have  current location weather. If it true, we update current location. If list is empty, just append element. If list is not empty, and top city is not found by location, insert our location at 0 index
+//            var currentWeather = weatherInfo
+//            currentWeather.isLocationSearch! = true
+//            if self.cityWeatherList.isEmpty{
+//                self.cityWeatherList.append(currentWeather)
+//                self.tableView.reloadData()
+//            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
+//                self.cityWeatherList[0] = currentWeather
+//                let indexPath = IndexPath(row: 0, section: 0)
+//                let weatherDataViewModel = WeatherDataFactory.viewModel(for: currentWeather)
+//                if let cell = self.tableView.cellForRow(at: indexPath) as? WeatherViewCell {
+//                    cell.updateCell(for: weatherDataViewModel)
+//                }
+//                // if list is not empty and top element not found with location
+//            } else {
+//                self.cityWeatherList.insert(currentWeather, at: 0)
+//                self.tableView.reloadData()
+//            }
+//            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+//        }, failure: { error in
+//            print(error)
+//        })
+//    }
+//}
 
 
 
