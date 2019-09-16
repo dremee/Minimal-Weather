@@ -9,7 +9,7 @@
 import Foundation
 
 protocol DataUpdaterProtocol {
-    var cityWeatherList: [WeatherDataModel] {get}
+//    var cityWeatherList: [WeatherDataModel] {get}
     func loadData(success: @escaping () -> ())
     func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ())
     func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ())
@@ -21,7 +21,7 @@ class DataUpdater: DataUpdaterProtocol {
     private let locationService = LocationService.shared
     private let weatherInfoController = WeatherInfoController()
     private let fileManager = SaveWeatherData()
-    var cityWeatherList = [WeatherDataModel]()
+    private var cityWeatherList = [WeatherDataModel]()
     
     private init() {
         self.locationService.delegate = self
@@ -29,6 +29,10 @@ class DataUpdater: DataUpdaterProtocol {
     
     //Make it singleton
     static let shared: DataUpdater = DataUpdater()
+    
+    func returnWeatherList() -> [WeatherDataModel] {
+        return cityWeatherList
+    }
     
     func loadData(success: @escaping ()-> ()) {
         guard let data = fileManager.loadWheatherListCities() else {return}
@@ -129,6 +133,7 @@ extension DataUpdater {
     }
 }
 
+//MARK: - Location service delegate
 extension DataUpdater: LocationServiceDelegate {
     func locationManagerGetLocation(latitude: String, longitude: String) {
         print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")

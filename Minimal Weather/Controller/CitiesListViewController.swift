@@ -20,7 +20,6 @@ class CitiesListViewController: UIViewController {
     fileprivate var timer = Timer()
     var dataUpdater = DataUpdater.shared
     
-    
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
@@ -165,7 +164,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        return cityWeatherList.count
-        return dataUpdater.cityWeatherList.count
+        return dataUpdater.returnWeatherList().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -173,7 +172,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         //Change selected view to dark grey
         cell.selectedBackgroundView = selectedGrayView
         
-        let currentView = WeatherDataFactory.viewModel(for: dataUpdater.cityWeatherList[indexPath.row])
+        let currentView = WeatherDataFactory.viewModel(for: dataUpdater.returnWeatherList()[indexPath.row])
         cell.updateCell(for: currentView)
         return cell
     }
@@ -193,7 +192,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //If first row get with location, don't access user to delete it
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 && dataUpdater.cityWeatherList[0].isLocationSearch {
+        if indexPath.row == 0 && dataUpdater.returnWeatherList()[0].isLocationSearch {
             return false
         }
         return true
