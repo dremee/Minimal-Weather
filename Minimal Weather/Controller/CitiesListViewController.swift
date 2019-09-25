@@ -23,8 +23,12 @@ class CitiesListViewController: UIViewController {
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(updateWeather), for: .valueChanged)
-        refreshControl.tintColor = UIColor(red: 240/255, green: 255/255, blue: 149/255, alpha: 1)
+        refreshControl.addTarget(self, action: #selector(updateWeather),
+                                 for: .valueChanged)
+        refreshControl.tintColor = UIColor(red: 240/255,
+                                           green: 255/255,
+                                           blue: 149/255,
+                                           alpha: 1)
         return refreshControl
     }()
     
@@ -65,7 +69,9 @@ class CitiesListViewController: UIViewController {
         
         
         //Create add city button and add it like right bar button item
-        let addCityButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCity))
+        let addCityButton = UIBarButtonItem(barButtonSystemItem: .add,
+                                            target: self,
+                                            action: #selector(addCity))
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
@@ -77,7 +83,9 @@ class CitiesListViewController: UIViewController {
         
         //Reload data every 10 seconds
         DispatchQueue.main.async {
-            self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
+            self.timer = Timer.scheduledTimer(withTimeInterval: 10,
+                                              repeats: true,
+                                              block: { (_) in
                 self.updateWeather()
             })
         }
@@ -108,11 +116,14 @@ class CitiesListViewController: UIViewController {
     
     //MARK: - Actions
     @objc private func addCity() {
-            let alert = UIAlertController(title: "Find by city name", message: "Enter city name to find it's weather", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Find by city name",
+                                          message: "Enter city name to find it's weather",
+                                          preferredStyle: .alert)
             alert.addTextField(configurationHandler: nil)
             let okAction = UIAlertAction(title: "Find", style: .default) { [weak alert] (_) in
                     
-                if let textField = alert?.textFields![0].text!, textField.count > 0 {
+                if let textField = alert?.textFields![0].text!,
+                    textField.count > 0 {
                     var findCity = textField.trimmingCharacters(in: .whitespaces)
                     findCity = findCity.replacingOccurrences(of: " ", with: "+")
                     

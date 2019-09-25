@@ -8,8 +8,10 @@
 
 import Foundation
 
-struct WeatherInfoController {
-    func fetchWeatherRequestController(query: [String: String], success: @escaping (WeatherDataModel) -> (), failure: @escaping (Error) -> ()) {
+struct NetworkController {
+    func fetchWeatherRequestController(query: [String: String],
+                                       success: @escaping (WeatherDataModel) -> (),
+                                       failure: @escaping (Error) -> ()) {
         let weatherURL = URL(string: "https://api.openweathermap.org/data/2.5/weather")
         let url = weatherURL?.withQueries(query)
         let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
@@ -19,7 +21,6 @@ struct WeatherInfoController {
             }
             let jsonDecoder = JSONDecoder()
             guard let data = data, var weatherInfo = try? jsonDecoder.decode(WeatherDataModel.self, from: data) else {
-
                 failure(NetworkError.DecodingError)
                 return
             }
