@@ -20,7 +20,7 @@ protocol DataUpdaterProtocol {
 class DataUpdater: DataUpdaterProtocol {
     private let locationService = LocationService.shared
     private let weatherInfoController = NetworkController()
-    private let fileManager = FileManagerController()
+//    private let fileManager = FileManagerController()
     private var cityWeatherList = [WeatherDataModel]()
     
     
@@ -44,7 +44,7 @@ class DataUpdater: DataUpdaterProtocol {
     }
     
     func loadData(success: @escaping ()-> ()) {
-        guard let data = fileManager.load(filePath: filePath) else {return}
+        guard let data = FileManager.load(filePath: filePath) else {return}
         cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
         success()
     }
@@ -72,7 +72,7 @@ class DataUpdater: DataUpdaterProtocol {
                 }
                 
                 guard let data = self.cityWeatherList.data else {return}
-                self.fileManager.save(data: data, filePath: self.filePath)
+                FileManager.save(data: data, filePath: self.filePath)
                 success()
             }, failure: { error in
                 failure(error)
@@ -89,7 +89,7 @@ class DataUpdater: DataUpdaterProtocol {
                                                                  success: { (weatherInfo) in
             self.cityWeatherList.append(weatherInfo)
             guard let data = self.cityWeatherList.data else {return}
-            self.fileManager.save(data: data, filePath: self.filePath)
+            FileManager.save(data: data, filePath: self.filePath)
             success()
         }, failure: {error in
             failure(error)
@@ -112,7 +112,7 @@ class DataUpdater: DataUpdaterProtocol {
                 
             }
             guard let data = self.cityWeatherList.data else {return}
-            self.fileManager.save(data: data, filePath: self.filePath)
+            FileManager.save(data: data, filePath: self.filePath)
         }, failure: { error in
             
         })
@@ -121,7 +121,7 @@ class DataUpdater: DataUpdaterProtocol {
     func deleteData(at index: Int) {
         self.cityWeatherList.remove(at: index)
         guard let data = self.cityWeatherList.data else {return}
-        self.fileManager.save(data: data, filePath: self.filePath)
+        FileManager.save(data: data, filePath: self.filePath)
     }
     
     private func updateLocationRow() {
@@ -129,7 +129,7 @@ class DataUpdater: DataUpdaterProtocol {
         if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
             cityWeatherList.remove(at: 0)
             guard let data = self.cityWeatherList.data else {return}
-            self.fileManager.save(data: data, filePath: self.filePath)
+            FileManager.save(data: data, filePath: self.filePath)
         }
     }
 }

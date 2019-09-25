@@ -14,7 +14,7 @@
 		112A0F7F2329756A00F0DCFC /* WeatherDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A0F7E2329756A00F0DCFC /* WeatherDataViewModel.swift */; };
 		112A0F81232977D800F0DCFC /* WeatherDataFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A0F80232977D800F0DCFC /* WeatherDataFactory.swift */; };
 		113D467F2317CFB400C84495 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113D467E2317CFB400C84495 /* ErrorHandling.swift */; };
-		114D50AF2316B04B00AEBD20 /* SaveWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114D50AE2316B04B00AEBD20 /* SaveWeatherData.swift */; };
+		114D50AF2316B04B00AEBD20 /* FileManager+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114D50AE2316B04B00AEBD20 /* FileManager+Helper.swift */; };
 		115519272322423B00A24208 /* WeatherInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115519262322423B00A24208 /* WeatherInfoTableViewController.swift */; };
 		116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFDF230E74AF00354DF9 /* AppDelegate.swift */; };
 		116DBFE2230E74AF00354DF9 /* DetailWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFE1230E74AF00354DF9 /* DetailWeatherViewController.swift */; };
@@ -40,7 +40,7 @@
 		112A0F7E2329756A00F0DCFC /* WeatherDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataViewModel.swift; sourceTree = "<group>"; };
 		112A0F80232977D800F0DCFC /* WeatherDataFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataFactory.swift; sourceTree = "<group>"; };
 		113D467E2317CFB400C84495 /* ErrorHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandling.swift; sourceTree = "<group>"; };
-		114D50AE2316B04B00AEBD20 /* SaveWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveWeatherData.swift; sourceTree = "<group>"; };
+		114D50AE2316B04B00AEBD20 /* FileManager+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Helper.swift"; sourceTree = "<group>"; };
 		115519262322423B00A24208 /* WeatherInfoTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoTableViewController.swift; sourceTree = "<group>"; };
 		116DBFDC230E74AF00354DF9 /* Minimal Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Minimal Weather.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		116DBFDF230E74AF00354DF9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,14 +88,6 @@
 			path = ErrorHandling;
 			sourceTree = "<group>";
 		};
-		114D50AD2316B01E00AEBD20 /* SaveData */ = {
-			isa = PBXGroup;
-			children = (
-				114D50AE2316B04B00AEBD20 /* SaveWeatherData.swift */,
-			);
-			path = SaveData;
-			sourceTree = "<group>";
-		};
 		116DBFD3230E74AF00354DF9 = {
 			isa = PBXGroup;
 			children = (
@@ -134,7 +126,6 @@
 				116DBFF7230E758700354DF9 /* WeatherDataModel.swift */,
 				110684CB233A90D40042E95A /* WeatherDataModel+Data.swift */,
 				113D467D2317CF9500C84495 /* ErrorHandling */,
-				114D50AD2316B01E00AEBD20 /* SaveData */,
 				116DBFF9230E770A00354DF9 /* Helpers */,
 			);
 			path = Model;
@@ -184,6 +175,7 @@
 			children = (
 				116DBFFA230E771C00354DF9 /* URL+Helpers.swift */,
 				111D927B23114047001E8C13 /* Formatter+Helpers.swift */,
+				114D50AE2316B04B00AEBD20 /* FileManager+Helper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -298,7 +290,7 @@
 				11C2F1092326A17C003E1486 /* LocationService.swift in Sources */,
 				113D467F2317CFB400C84495 /* ErrorHandling.swift in Sources */,
 				116DBFE2230E74AF00354DF9 /* DetailWeatherViewController.swift in Sources */,
-				114D50AF2316B04B00AEBD20 /* SaveWeatherData.swift in Sources */,
+				114D50AF2316B04B00AEBD20 /* FileManager+Helper.swift in Sources */,
 				1119F8D423192B3100FD739B /* WeatherViewCell.swift in Sources */,
 				116DBFFE230FD2E800354DF9 /* NetworkController.swift in Sources */,
 				115519272322423B00A24208 /* WeatherInfoTableViewController.swift in Sources */,
