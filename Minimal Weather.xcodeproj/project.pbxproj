@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		110684CC233A90D40042E95A /* WeatherDataModel+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110684CB233A90D40042E95A /* WeatherDataModel+Data.swift */; };
 		1119F8D423192B3100FD739B /* WeatherViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119F8D223192B3100FD739B /* WeatherViewCell.swift */; };
 		1119F8D523192B3100FD739B /* WeatherViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1119F8D323192B3100FD739B /* WeatherViewCell.xib */; };
 		111D927C23114047001E8C13 /* Formatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D927B23114047001E8C13 /* Formatter+Helpers.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		110684CB233A90D40042E95A /* WeatherDataModel+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherDataModel+Data.swift"; sourceTree = "<group>"; };
 		1119F8D223192B3100FD739B /* WeatherViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewCell.swift; sourceTree = "<group>"; };
 		1119F8D323192B3100FD739B /* WeatherViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherViewCell.xib; sourceTree = "<group>"; };
 		111D927B23114047001E8C13 /* Formatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Formatter+Helpers.swift"; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				116DBFF7230E758700354DF9 /* WeatherDataModel.swift */,
+				110684CB233A90D40042E95A /* WeatherDataModel+Data.swift */,
 				113D467D2317CF9500C84495 /* ErrorHandling */,
 				114D50AD2316B01E00AEBD20 /* SaveData */,
 				116DBFF9230E770A00354DF9 /* Helpers */,
@@ -302,6 +305,7 @@
 				11A75294232BCAF60098C193 /* DataUpdater.swift in Sources */,
 				112A0F81232977D800F0DCFC /* WeatherDataFactory.swift in Sources */,
 				11A7528F232B87110098C193 /* DetailWeatherDataViewModel.swift in Sources */,
+				110684CC233A90D40042E95A /* WeatherDataModel+Data.swift in Sources */,
 				11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */,
 				116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */,
 				116DBFE0230E74AF00354DF9 /* AppDelegate.swift in Sources */,

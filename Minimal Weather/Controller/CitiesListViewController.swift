@@ -164,7 +164,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        return cityWeatherList.count
-        return dataUpdater.returnWeatherList().count
+        return dataUpdater.returnWeatherViewModelList().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -172,7 +172,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         //Change selected view to dark grey
         cell.selectedBackgroundView = selectedGrayView
         
-        let currentView = WeatherDataFactory.viewModel(for: dataUpdater.returnWeatherList()[indexPath.row])
+        let currentView = dataUpdater.returnWeatherViewModelList()[indexPath.row]
         cell.updateCell(for: currentView)
         return cell
     }
@@ -192,7 +192,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //If first row get with location, don't access user to delete it
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 && dataUpdater.returnWeatherList()[0].isLocationSearch {
+        if indexPath.row == 0 && dataUpdater.returnWeatherViewModelList()[0].isLocation {
             return false
         }
         return true

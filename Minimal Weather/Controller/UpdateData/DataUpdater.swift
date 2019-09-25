@@ -20,8 +20,9 @@ protocol DataUpdaterProtocol {
 class DataUpdater: DataUpdaterProtocol {
     private let locationService = LocationService.shared
     private let weatherInfoController = WeatherInfoController()
-    private let fileManager = SaveWeatherData()
+    private let fileManager = FileManagerController()
     private var cityWeatherList = [WeatherDataModel]()
+    
     
     private init() {
         self.locationService.delegate = self
@@ -30,13 +31,21 @@ class DataUpdater: DataUpdaterProtocol {
     //Make it singleton
     static let shared: DataUpdater = DataUpdater()
     
-    func returnWeatherList() -> [WeatherDataModel] {
+    private func returnWeatherList() -> [WeatherDataModel] {
         return cityWeatherList
     }
     
+    func returnWeatherViewModelList() -> [WeatherDataViewModel] {
+        return returnWeatherList().map {WeatherDataFactory.viewModel(for: $0)}
+    }
+    
+    func returnDetailViewModel() -> [DetailWeatherDataViewModel] {
+        return returnWeatherList().map {WeatherDataFactory.detailViewModel(for: $0)}
+    }
+    
     func loadData(success: @escaping ()-> ()) {
-        guard let data = fileManager.loadWheatherListCities() else {return}
-        cityWeatherList = data
+        guard let data = fileManager.load(filePath: filePath) else {return}
+        cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
         success()
     }
     
@@ -59,7 +68,9 @@ class DataUpdater: DataUpdaterProtocol {
                     //default flag is false
                     self.cityWeatherList[index] = weatherInfo
                 }
-                self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+                
+                guard let data = self.cityWeatherList.data else {return}
+                self.fileManager.save(data: data, filePath: self.filePath)
                 success()
             }, failure: { error in
                 failure(error)
@@ -74,7 +85,8 @@ class DataUpdater: DataUpdaterProtocol {
         let query = ["q": city, "appid": "6ba713b340e3501610cdeb5793382e29"]
         self.weatherInfoController.fetchWeatherRequestController(query: query, success: { (weatherInfo) in
             self.cityWeatherList.append(weatherInfo)
-            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+            guard let data = self.cityWeatherList.data else {return}
+            self.fileManager.save(data: data, filePath: self.filePath)
             success()
         }, failure: {error in
             failure(error)
@@ -95,7 +107,8 @@ class DataUpdater: DataUpdaterProtocol {
                 self.cityWeatherList.insert(currentWeather, at: 0)
                 
             }
-            self.fileManager.saveWeatherListCities(list: self.cityWeatherList)
+            guard let data = self.cityWeatherList.data else {return}
+            self.fileManager.save(data: data, filePath: self.filePath)
         }, failure: { error in
             
         })
@@ -103,14 +116,16 @@ class DataUpdater: DataUpdaterProtocol {
     
     func deleteData(at index: Int) {
         self.cityWeatherList.remove(at: index)
-        fileManager.saveWeatherListCities(list: self.cityWeatherList)
+        guard let data = self.cityWeatherList.data else {return}
+        self.fileManager.save(data: data, filePath: self.filePath)
     }
     
     private func updateLocationRow() {
         locationService.checkLocationStatus()
         if !cityWeatherList.isEmpty && locationService.locationAuthStatus == .denied && cityWeatherList[0].isLocationSearch {
             cityWeatherList.remove(at: 0)
-            fileManager.saveWeatherListCities(list: cityWeatherList)
+            guard let data = self.cityWeatherList.data else {return}
+            self.fileManager.save(data: data, filePath: self.filePath)
         }
     }
 }
@@ -139,5 +154,13 @@ extension DataUpdater: LocationServiceDelegate {
         print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")
         let query = ["lat": latitude, "lon": longitude, "appid": "6ba713b340e3501610cdeb5793382e29"]
         updateLocationRow(query: query)
+    }
+}
+
+
+extension DataUpdater {
+    var filePath: URL {
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return path.appendingPathComponent("WeatherList.plist")
     }
 }

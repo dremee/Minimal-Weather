@@ -34,17 +34,17 @@ class DetailWeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let currentWeatherIndex = currentWeatherIndex {
-            title = dataUpdater.returnWeatherList()[currentWeatherIndex].name
-            let weatherViewModel = WeatherDataFactory.detailViewModel(for: dataUpdater.returnWeatherList()[currentWeatherIndex])
-            self.updateUI(weatherData: weatherViewModel)
+            title = dataUpdater.returnDetailViewModel()[currentWeatherIndex].city
+            
+            self.updateUI(weatherData: dataUpdater.returnDetailViewModel()[currentWeatherIndex])
             
             
             
-            delegate?.updateWeatherDataInStaticTableView(with: weatherViewModel.detailWeatherInfoDataViewModel)
-            updateData()
+            delegate?.updateWeatherDataInStaticTableView(with: dataUpdater.returnDetailViewModel()[currentWeatherIndex].detailWeatherInfoDataViewModel)
+//            updateData()
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
-                    self.updateData()
+//                    self.updateData()
                 })
             }
         }
@@ -88,16 +88,16 @@ class DetailWeatherViewController: UIViewController {
         }
     }
     
-    @objc func updateData() {
-        //here i'm updating data, when user stay in detail vc
-        
-        dataUpdater.updateData(success: {
-            let weatherDataModel = WeatherDataFactory.detailViewModel(for: self.dataUpdater.returnWeatherList()[self.currentWeatherIndex!])
-            self.updateUI(weatherData: weatherDataModel)
-        }) { (error) in
-            self.navigationController?.popViewController(animated: true)
-        }
-    }
+//    @objc func updateData() {
+//        //here i'm updating data, when user stay in detail vc
+//
+//        dataUpdater.updateData(success: {
+//            let weatherDataModel = WeatherDataFactory.detailViewModel(for: self.dataUpdater.returnWeatherList()[self.currentWeatherIndex!])
+//            self.updateUI(weatherData: weatherDataModel)
+//        }) { (error) in
+//            self.navigationController?.popViewController(animated: true)
+//        }
+//    }
 }
 
 

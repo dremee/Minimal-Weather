@@ -12,5 +12,6 @@ struct WeatherDataViewModel {
     let city: String
     let tempreture: String
     let time: String
+    let isLocation: Bool
 }
 
