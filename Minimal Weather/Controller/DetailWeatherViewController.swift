@@ -21,7 +21,7 @@ class DetailWeatherViewController: UIViewController {
     //MARK: - Properties
     private var timer = Timer()
 
-    private var dataUpdater = DataUpdater.shared
+    private var dataUpdater = DataUpdaterService.shared
     var currentWeatherIndex: Int?
     
     //MARK: - Outlets
@@ -36,7 +36,7 @@ class DetailWeatherViewController: UIViewController {
         if let currentWeatherIndex = currentWeatherIndex {
             title = dataUpdater.returnDetailViewModel()[currentWeatherIndex].city
             
-            self.updateUI(weatherData: dataUpdater.returnDetailViewModel()[currentWeatherIndex])
+            self.updateUI(weatherDataModel: dataUpdater.returnDetailViewModel()[currentWeatherIndex])
             
             
             
@@ -72,12 +72,12 @@ class DetailWeatherViewController: UIViewController {
 
     
     //MARK: - Helpers
-    private func updateUI(weatherData: DetailWeatherDataViewModel) {
-        self.title = weatherData.city
-        self.cityLabel.text = weatherData.city
-        self.currentTimeLabel.text = weatherData.time
+    private func updateUI(weatherDataModel: DetailWeatherDataViewModel) {
+        self.title = weatherDataModel.city
+        self.cityLabel.text = weatherDataModel.city
+        self.currentTimeLabel.text = weatherDataModel.time
         //we have just logo name, i think, more practice don't save image, and just keep it number and update it, when it needed
-        let imageURL = URL(string: "https://openweathermap.org/img/wn/\(weatherData.icon)@2x.png")
+        let imageURL = URL(string: "https://openweathermap.org/img/wn/\(weatherDataModel.icon)@2x.png")
         //Get image data in background queue
         DispatchQueue.global(qos: .background).async {
             guard let url = imageURL, let imageData = try? Data(contentsOf: url) else {return}
@@ -93,7 +93,8 @@ class DetailWeatherViewController: UIViewController {
 
         dataUpdater.updateData(success: {
             let weatherDataModel = self.dataUpdater.returnDetailViewModel()[self.currentWeatherIndex!]
-            self.updateUI(weatherData: weatherDataModel)
+            self.updateUI(weatherDataModel: weatherDataModel)
+            self.delegate?.updateWeatherDataInStaticTableView(with: weatherDataModel.detailWeatherInfoDataViewModel)
         }) { (error) in
             self.navigationController?.popViewController(animated: true)
         }

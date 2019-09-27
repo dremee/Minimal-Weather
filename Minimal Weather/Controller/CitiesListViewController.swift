@@ -18,7 +18,7 @@ class CitiesListViewController: UIViewController {
     //MARK: - properties
     private var selectedWeatherIndex: Int?
     fileprivate var timer = Timer()
-    var dataUpdater = DataUpdater.shared
+    var dataUpdater = DataUpdaterService.shared
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {

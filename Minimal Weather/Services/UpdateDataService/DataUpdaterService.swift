@@ -17,7 +17,7 @@ protocol DataUpdaterProtocol {
 }
 
 //MARK: - Class, that manipulating data for controllers
-class DataUpdater: DataUpdaterProtocol {
+class DataUpdaterService: DataUpdaterProtocol {
     private let locationService = LocationService.shared
     private let weatherInfoController = NetworkController()
 //    private let fileManager = FileManagerController()
@@ -29,7 +29,7 @@ class DataUpdater: DataUpdaterProtocol {
     }
     
     //Make it singleton
-    static let shared: DataUpdater = DataUpdater()
+    static let shared: DataUpdaterService = DataUpdaterService()
     
     private func returnWeatherList() -> [WeatherDataModel] {
         return cityWeatherList
@@ -135,7 +135,7 @@ class DataUpdater: DataUpdaterProtocol {
 }
 
 //MARK: - Helper query for update data
-extension DataUpdater {
+extension DataUpdaterService {
     fileprivate func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
         // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
         var query = [String: String]()
@@ -160,7 +160,7 @@ extension DataUpdater {
 }
 
 //MARK: - Location service delegate
-extension DataUpdater: LocationServiceDelegate {
+extension DataUpdaterService: LocationServiceDelegate {
     func locationManagerGetLocation(latitude: String, longitude: String) {
         print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")
         let query = ["lat": latitude,
@@ -171,7 +171,7 @@ extension DataUpdater: LocationServiceDelegate {
 }
 
 
-extension DataUpdater {
+extension DataUpdaterService {
     var filePath: URL {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         return path.appendingPathComponent("WeatherList.plist")
