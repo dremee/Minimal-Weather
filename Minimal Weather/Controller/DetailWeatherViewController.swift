@@ -15,14 +15,15 @@ protocol DetailWeatherDelegate {
     func updateWeatherDataInStaticTableView(with data: DetailWeatherInfoDataViewModel)
 }
 
+//MARK: - View Controller
 class DetailWeatherViewController: UIViewController {
     //Delegate
     var delegate: DetailWeatherDelegate?
     //MARK: - Properties
     private var timer = Timer()
 
-    private var dataUpdater = DataUpdaterService.shared
-    private var presenter = Presenter()
+//    private var dataUpdater = DataUpdaterService.shared
+    private var presenter = CitiesListPresenter()
     var currentWeatherIndex: Int?
     
     //MARK: - Outlets
@@ -92,7 +93,7 @@ class DetailWeatherViewController: UIViewController {
     @objc func updateData() {
         //here i'm updating data, when user stay in detail vc
 
-        dataUpdater.updateData(success: {
+        presenter.updateData(success: {
             let weatherDataModel = self.presenter.returnDetailViewModel()[self.currentWeatherIndex!]
             self.updateUI(weatherDataModel: weatherDataModel)
             self.delegate?.updateWeatherDataInStaticTableView(with: weatherDataModel.detailWeatherInfoDataViewModel)

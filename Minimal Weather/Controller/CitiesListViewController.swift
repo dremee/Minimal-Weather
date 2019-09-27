@@ -19,7 +19,7 @@ class CitiesListViewController: UIViewController {
     private var selectedWeatherIndex: Int?
     fileprivate var timer = Timer()
 //    var dataUpdater = DataUpdaterService.shared
-    private var presenter = Presenter()
+    private var presenter = CitiesListPresenter()
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
@@ -76,9 +76,10 @@ class CitiesListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
-        presenter.loadCityList {
-            self.updateWeather()
-        }
+//        presenter.loadCityList {
+//            self.updateWeather()
+//        }
+        updateWeather()
         
         setupErrorView()
         

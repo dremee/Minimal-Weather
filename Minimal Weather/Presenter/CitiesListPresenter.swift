@@ -8,14 +8,15 @@
 
 import Foundation
 
-class Presenter {
+class CitiesListPresenter {
     private var dataService = DataUpdaterService.shared
     
-    //Load city for view controller
-    func loadCityList(success: @escaping () -> ()) {
-        dataService.loadData {
-            success()
-        }
+    private func loadCityList() {
+        dataService.loadData()
+    }
+    
+    public init() {
+        loadCityList()
     }
     
     // Make weather data model in ModelView classes

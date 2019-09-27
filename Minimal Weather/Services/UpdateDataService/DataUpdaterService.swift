@@ -16,7 +16,7 @@ import Foundation
 //    func deleteData(at index: Int)
 //}
 
-//MARK: - Class, that manipulating data for controllers
+//MARK: - Class, that manipulating data for presenters
 class DataUpdaterService {
     private let locationService = LocationService.shared
     private let weatherInfoController = NetworkController()
@@ -44,10 +44,15 @@ class DataUpdaterService {
 //    }
     
     
-    func loadData(success: @escaping ()-> ()) {
+//    func loadData(success: @escaping ()-> ()) {
+//        guard let data = FileManager.load(filePath: filePath) else {return}
+//        cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
+//        success()
+//    }
+    
+    func loadData() {
         guard let data = FileManager.load(filePath: filePath) else {return}
         cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
-        success()
     }
     
     func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ()) {
