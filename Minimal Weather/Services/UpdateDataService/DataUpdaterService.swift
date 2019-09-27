@@ -43,6 +43,7 @@ class DataUpdaterService {
 //        return returnWeatherList().map {WeatherDataFactory.detailViewModel(for: $0)}
 //    }
     
+    
     func loadData(success: @escaping ()-> ()) {
         guard let data = FileManager.load(filePath: filePath) else {return}
         cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
@@ -87,10 +88,10 @@ class DataUpdaterService {
         let query = ["q": city, "appid": "6ba713b340e3501610cdeb5793382e29"]
         self.weatherInfoController.fetchWeatherRequestController(query: query,
                                                                  success: { (weatherInfo) in
-            self.cityWeatherList.append(weatherInfo)
-            guard let data = self.cityWeatherList.data else {return}
-            FileManager.save(data: data, filePath: self.filePath)
-            success()
+                                                                    self.cityWeatherList.append(weatherInfo)
+                                                                    guard let data = self.cityWeatherList.data else {return}
+                                                                    FileManager.save(data: data, filePath: self.filePath)
+                                                                    success()
         }, failure: {error in
             failure(error)
         })
@@ -99,20 +100,20 @@ class DataUpdaterService {
     fileprivate func updateLocationRow(query: [String: String]) {
         weatherInfoController.fetchWeatherRequestController(query: query,
                                                             success: { (weatherInfo) in
-            var currentWeather = weatherInfo
-            currentWeather.isLocationSearch! = true
-            if self.cityWeatherList.isEmpty{
-                self.cityWeatherList.append(currentWeather)
-                
-            } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
-                self.cityWeatherList[0] = currentWeather
-                
-            } else {
-                self.cityWeatherList.insert(currentWeather, at: 0)
-                
-            }
-            guard let data = self.cityWeatherList.data else {return}
-            FileManager.save(data: data, filePath: self.filePath)
+                                                                var currentWeather = weatherInfo
+                                                                currentWeather.isLocationSearch! = true
+                                                                if self.cityWeatherList.isEmpty{
+                                                                    self.cityWeatherList.append(currentWeather)
+                                                                    
+                                                                } else if !self.cityWeatherList.isEmpty && self.cityWeatherList[0].isLocationSearch {
+                                                                    self.cityWeatherList[0] = currentWeather
+                                                                    
+                                                                } else {
+                                                                    self.cityWeatherList.insert(currentWeather, at: 0)
+                                                                    
+                                                                }
+                                                                guard let data = self.cityWeatherList.data else {return}
+                                                                FileManager.save(data: data, filePath: self.filePath)
         }, failure: { error in
             
         })

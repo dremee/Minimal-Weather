@@ -12,6 +12,12 @@ class Presenter {
     
     private var dataService = DataUpdaterService.shared
     
+    func loadCityList(success: @escaping () -> ()) {
+        dataService.loadData {
+            success()
+        }
+    }
+    
     func returnWeatherViewModelList() -> [WeatherDataViewModel] {
         return dataService.returnWeatherList().map {WeatherDataFactory.viewModel(for: $0)}
     }

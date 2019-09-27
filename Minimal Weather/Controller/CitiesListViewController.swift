@@ -76,9 +76,10 @@ class CitiesListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
-        dataUpdater.loadData {
+        presenter.loadCityList {
             self.updateWeather()
         }
+        
         setupErrorView()
         
         
