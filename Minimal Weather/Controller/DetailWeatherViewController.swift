@@ -41,10 +41,10 @@ class DetailWeatherViewController: UIViewController {
             
             
             delegate?.updateWeatherDataInStaticTableView(with: dataUpdater.returnDetailViewModel()[currentWeatherIndex].detailWeatherInfoDataViewModel)
-//            updateData()
+            updateData()
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
-//                    self.updateData()
+                    self.updateData()
                 })
             }
         }
@@ -88,16 +88,16 @@ class DetailWeatherViewController: UIViewController {
         }
     }
     
-//    @objc func updateData() {
-//        //here i'm updating data, when user stay in detail vc
-//
-//        dataUpdater.updateData(success: {
-//            let weatherDataModel = WeatherDataFactory.detailViewModel(for: self.dataUpdater.returnWeatherList()[self.currentWeatherIndex!])
-//            self.updateUI(weatherData: weatherDataModel)
-//        }) { (error) in
-//            self.navigationController?.popViewController(animated: true)
-//        }
-//    }
+    @objc func updateData() {
+        //here i'm updating data, when user stay in detail vc
+
+        dataUpdater.updateData(success: {
+            let weatherDataModel = self.dataUpdater.returnDetailViewModel()[self.currentWeatherIndex!]
+            self.updateUI(weatherData: weatherDataModel)
+        }) { (error) in
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
 }
 
 
