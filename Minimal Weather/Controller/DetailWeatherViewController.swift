@@ -21,8 +21,6 @@ class DetailWeatherViewController: UIViewController {
     var delegate: DetailWeatherDelegate?
     //MARK: - Properties
     private var timer = Timer()
-
-//    private var dataUpdater = DataUpdaterService.shared
     private var presenter = CitiesListPresenter()
     var currentWeatherIndex: Int?
     
@@ -37,11 +35,7 @@ class DetailWeatherViewController: UIViewController {
         super.viewDidLoad()
         if let currentWeatherIndex = currentWeatherIndex {
             title = presenter.returnDetailViewModel()[currentWeatherIndex].city
-            
             self.updateUI(weatherDataModel: presenter.returnDetailViewModel()[currentWeatherIndex])
-            
-            
-            
             delegate?.updateWeatherDataInStaticTableView(with: presenter.returnDetailViewModel()[currentWeatherIndex].detailWeatherInfoDataViewModel)
             updateData()
             DispatchQueue.main.async {
@@ -92,7 +86,6 @@ class DetailWeatherViewController: UIViewController {
     
     @objc func updateData() {
         //here i'm updating data, when user stay in detail vc
-
         presenter.updateData(success: {
             let weatherDataModel = self.presenter.returnDetailViewModel()[self.currentWeatherIndex!]
             self.updateUI(weatherDataModel: weatherDataModel)

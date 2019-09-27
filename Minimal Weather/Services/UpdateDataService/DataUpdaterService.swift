@@ -24,33 +24,18 @@ class DataUpdaterService {
     private var cityWeatherList = [WeatherDataModel]()
     
     
-    private init() {
+    init() {
         self.locationService.delegate = self
+        loadData()
     }
     
-    //Make it singleton
-    static let shared: DataUpdaterService = DataUpdaterService()
     
     func returnWeatherList() -> [WeatherDataModel] {
         return cityWeatherList
     }
     
-//    func returnWeatherViewModelList() -> [WeatherDataViewModel] {
-//        return returnWeatherList().map {WeatherDataFactory.viewModel(for: $0)}
-//    }
-//    
-//    func returnDetailViewModel() -> [DetailWeatherDataViewModel] {
-//        return returnWeatherList().map {WeatherDataFactory.detailViewModel(for: $0)}
-//    }
     
-    
-//    func loadData(success: @escaping ()-> ()) {
-//        guard let data = FileManager.load(filePath: filePath) else {return}
-//        cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
-//        success()
-//    }
-    
-    func loadData() {
+    private func loadData() {
         guard let data = FileManager.load(filePath: filePath) else {return}
         cityWeatherList = data.model(with: [WeatherDataModel].self) ?? []
     }

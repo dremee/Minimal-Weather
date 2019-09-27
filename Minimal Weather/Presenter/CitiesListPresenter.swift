@@ -9,14 +9,10 @@
 import Foundation
 
 class CitiesListPresenter {
-    private var dataService = DataUpdaterService.shared
-    
-    private func loadCityList() {
-        dataService.loadData()
-    }
-    
+    private var dataService: DataUpdaterService!
+
     public init() {
-        loadCityList()
+        dataService = DataUpdaterService()
     }
     
     // Make weather data model in ModelView classes

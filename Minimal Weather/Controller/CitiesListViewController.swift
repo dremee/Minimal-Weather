@@ -18,7 +18,6 @@ class CitiesListViewController: UIViewController {
     //MARK: - properties
     private var selectedWeatherIndex: Int?
     fileprivate var timer = Timer()
-//    var dataUpdater = DataUpdaterService.shared
     private var presenter = CitiesListPresenter()
     
     //Create refresh control
@@ -76,9 +75,6 @@ class CitiesListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addCityButton
         
         //Make safe unwrapping from file manager, and if it exist, update weather
-//        presenter.loadCityList {
-//            self.updateWeather()
-//        }
         updateWeather()
         
         setupErrorView()
@@ -176,7 +172,6 @@ class CitiesListViewController: UIViewController {
 extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return cityWeatherList.count
         return presenter.returnWeatherViewModelList().count
     }
     
