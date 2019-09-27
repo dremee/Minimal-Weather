@@ -19,6 +19,7 @@ class CitiesListViewController: UIViewController {
     private var selectedWeatherIndex: Int?
     fileprivate var timer = Timer()
     var dataUpdater = DataUpdaterService.shared
+    private var presenter = Presenter()
     
     //Create refresh control
     private lazy var refreshControl: UIRefreshControl = {
@@ -155,7 +156,6 @@ class CitiesListViewController: UIViewController {
             self.refreshControl.endRefreshing()
         }) { (error) in
             self.runErrorAnimation(error: error)
-            self.runErrorAnimation(error: error)
         }
     }
     
@@ -175,7 +175,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     //MARK: - Table view data source
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        return cityWeatherList.count
-        return dataUpdater.returnWeatherViewModelList().count
+        return presenter.returnWeatherViewModelList().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -183,7 +183,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
         //Change selected view to dark grey
         cell.selectedBackgroundView = selectedGrayView
         
-        let currentView = dataUpdater.returnWeatherViewModelList()[indexPath.row]
+        let currentView = presenter.returnWeatherViewModelList()[indexPath.row]
         cell.updateCell(for: currentView)
         return cell
     }
@@ -203,7 +203,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     //If first row get with location, don't access user to delete it
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 && dataUpdater.returnWeatherViewModelList()[0].isLocation {
+        if indexPath.row == 0 && presenter.returnWeatherViewModelList()[0].isLocation {
             return false
         }
         return true

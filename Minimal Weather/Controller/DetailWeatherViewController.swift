@@ -22,6 +22,7 @@ class DetailWeatherViewController: UIViewController {
     private var timer = Timer()
 
     private var dataUpdater = DataUpdaterService.shared
+    private var presenter = Presenter()
     var currentWeatherIndex: Int?
     
     //MARK: - Outlets
@@ -34,13 +35,13 @@ class DetailWeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let currentWeatherIndex = currentWeatherIndex {
-            title = dataUpdater.returnDetailViewModel()[currentWeatherIndex].city
+            title = presenter.returnDetailViewModel()[currentWeatherIndex].city
             
-            self.updateUI(weatherDataModel: dataUpdater.returnDetailViewModel()[currentWeatherIndex])
+            self.updateUI(weatherDataModel: presenter.returnDetailViewModel()[currentWeatherIndex])
             
             
             
-            delegate?.updateWeatherDataInStaticTableView(with: dataUpdater.returnDetailViewModel()[currentWeatherIndex].detailWeatherInfoDataViewModel)
+            delegate?.updateWeatherDataInStaticTableView(with: presenter.returnDetailViewModel()[currentWeatherIndex].detailWeatherInfoDataViewModel)
             updateData()
             DispatchQueue.main.async {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
@@ -92,7 +93,7 @@ class DetailWeatherViewController: UIViewController {
         //here i'm updating data, when user stay in detail vc
 
         dataUpdater.updateData(success: {
-            let weatherDataModel = self.dataUpdater.returnDetailViewModel()[self.currentWeatherIndex!]
+            let weatherDataModel = self.presenter.returnDetailViewModel()[self.currentWeatherIndex!]
             self.updateUI(weatherDataModel: weatherDataModel)
             self.delegate?.updateWeatherDataInStaticTableView(with: weatherDataModel.detailWeatherInfoDataViewModel)
         }) { (error) in

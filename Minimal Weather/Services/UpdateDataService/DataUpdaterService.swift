@@ -8,16 +8,16 @@
 
 import Foundation
 
-protocol DataUpdaterProtocol {
-//    var cityWeatherList: [WeatherDataModel] {get}
-    func loadData(success: @escaping () -> ())
-    func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ())
-    func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ())
-    func deleteData(at index: Int)
-}
+//protocol DataUpdaterProtocol {
+////    var cityWeatherList: [WeatherDataModel] {get}
+//    func loadData(success: @escaping () -> ())
+//    func updateData(success: @escaping () -> (), failure: @escaping (Error) -> ())
+//    func addData(with city: String, success: @escaping () -> (), failure: @escaping (Error) -> ())
+//    func deleteData(at index: Int)
+//}
 
 //MARK: - Class, that manipulating data for controllers
-class DataUpdaterService: DataUpdaterProtocol {
+class DataUpdaterService {
     private let locationService = LocationService.shared
     private let weatherInfoController = NetworkController()
 //    private let fileManager = FileManagerController()
@@ -31,17 +31,17 @@ class DataUpdaterService: DataUpdaterProtocol {
     //Make it singleton
     static let shared: DataUpdaterService = DataUpdaterService()
     
-    private func returnWeatherList() -> [WeatherDataModel] {
+    func returnWeatherList() -> [WeatherDataModel] {
         return cityWeatherList
     }
     
-    func returnWeatherViewModelList() -> [WeatherDataViewModel] {
-        return returnWeatherList().map {WeatherDataFactory.viewModel(for: $0)}
-    }
-    
-    func returnDetailViewModel() -> [DetailWeatherDataViewModel] {
-        return returnWeatherList().map {WeatherDataFactory.detailViewModel(for: $0)}
-    }
+//    func returnWeatherViewModelList() -> [WeatherDataViewModel] {
+//        return returnWeatherList().map {WeatherDataFactory.viewModel(for: $0)}
+//    }
+//    
+//    func returnDetailViewModel() -> [DetailWeatherDataViewModel] {
+//        return returnWeatherList().map {WeatherDataFactory.detailViewModel(for: $0)}
+//    }
     
     func loadData(success: @escaping ()-> ()) {
         guard let data = FileManager.load(filePath: filePath) else {return}
