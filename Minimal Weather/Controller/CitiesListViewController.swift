@@ -18,7 +18,7 @@ class CitiesListViewController: UIViewController {
     //MARK: - properties
     private var selectedWeatherIndex: Int?
     fileprivate var timer = Timer()
-    var dataUpdater = DataUpdaterService.shared
+//    var dataUpdater = DataUpdaterService.shared
     private var presenter = Presenter()
     
     //Create refresh control
@@ -129,7 +129,7 @@ class CitiesListViewController: UIViewController {
                     var findCity = textField.trimmingCharacters(in: .whitespaces)
                     findCity = findCity.replacingOccurrences(of: " ", with: "+")
                     
-                    self.dataUpdater.addData(with: findCity, success: {
+                    self.presenter.addData(with: findCity, success: {
                         DispatchQueue.main.async {
                             self.tableView.reloadData()
                         }
@@ -152,7 +152,7 @@ class CitiesListViewController: UIViewController {
     //update weather list
     @objc private func updateWeather() {
         
-        dataUpdater.updateData(success: {
+        presenter.updateData(success: {
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
         }) { (error) in
@@ -212,7 +212,7 @@ extension CitiesListViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            dataUpdater.deleteData(at: indexPath.row)
+            presenter.deleteData(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
             self.tableView.reloadData()
         }
