@@ -17,7 +17,7 @@ import Foundation
 //}
 
 //MARK: - Class, that manipulating data for presenters
-class DataUpdaterService {
+class DataManagerService {
     private let locationService = LocationService.shared
     private let weatherInfoController = NetworkController()
 //    private let fileManager = FileManagerController()
@@ -126,7 +126,7 @@ class DataUpdaterService {
 }
 
 //MARK: - Helper query for update data
-extension DataUpdaterService {
+extension DataManagerService {
     fileprivate func queryHelper(index: Int, weatherData: WeatherDataModel) -> [String: String] {
         // in first, we check, that it is 0 row, location search and we have latitude and longitude. If app just running, we don't update this row
         var query = [String: String]()
@@ -151,7 +151,7 @@ extension DataUpdaterService {
 }
 
 //MARK: - Location service delegate
-extension DataUpdaterService: LocationServiceDelegate {
+extension DataManagerService: LocationServiceDelegate {
     func locationManagerGetLocation(latitude: String, longitude: String) {
         print("Location service from DataUpdater: lat: \(latitude), lon: \(longitude)")
         let query = ["lat": latitude,
@@ -162,7 +162,7 @@ extension DataUpdaterService: LocationServiceDelegate {
 }
 
 
-extension DataUpdaterService {
+extension DataManagerService {
     var filePath: URL {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         return path.appendingPathComponent("WeatherList.plist")

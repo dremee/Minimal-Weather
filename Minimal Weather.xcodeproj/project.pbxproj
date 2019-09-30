@@ -26,7 +26,7 @@
 		116DBFFB230E771C00354DF9 /* URL+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFA230E771C00354DF9 /* URL+Helpers.swift */; };
 		116DBFFE230FD2E800354DF9 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116DBFFD230FD2E800354DF9 /* NetworkController.swift */; };
 		11A7528F232B87110098C193 /* DetailWeatherDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A7528E232B87110098C193 /* DetailWeatherDataViewModel.swift */; };
-		11A75294232BCAF60098C193 /* DataUpdaterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A75293232BCAF60098C193 /* DataUpdaterService.swift */; };
+		11A75294232BCAF60098C193 /* DataManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A75293232BCAF60098C193 /* DataManagerService.swift */; };
 		11C2F1092326A17C003E1486 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C2F1082326A17C003E1486 /* LocationService.swift */; };
 		11C70D592313F9D8005FB2C5 /* CitiesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */; };
 		11CAFC40231FC03D00F7D1C2 /* Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 11CAFC3F231FC03D00F7D1C2 /* Readme.md */; };
@@ -55,7 +55,7 @@
 		116DBFFA230E771C00354DF9 /* URL+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Helpers.swift"; sourceTree = "<group>"; };
 		116DBFFD230FD2E800354DF9 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
 		11A7528E232B87110098C193 /* DetailWeatherDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailWeatherDataViewModel.swift; sourceTree = "<group>"; };
-		11A75293232BCAF60098C193 /* DataUpdaterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataUpdaterService.swift; sourceTree = "<group>"; };
+		11A75293232BCAF60098C193 /* DataManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerService.swift; sourceTree = "<group>"; };
 		11C2F1082326A17C003E1486 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		11C70D582313F9D8005FB2C5 /* CitiesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesListViewController.swift; sourceTree = "<group>"; };
 		11CAFC3F231FC03D00F7D1C2 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 		110C5ABF233DF8D60002E270 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				11A75292232BCAE00098C193 /* UpdateDataService */,
+				11A75292232BCAE00098C193 /* DataManager */,
 				11C2F1072326A15F003E1486 /* LocationService */,
 				116DBFFC230FD2A800354DF9 /* Network */,
 			);
@@ -217,12 +217,12 @@
 			path = "View Models";
 			sourceTree = "<group>";
 		};
-		11A75292232BCAE00098C193 /* UpdateDataService */ = {
+		11A75292232BCAE00098C193 /* DataManager */ = {
 			isa = PBXGroup;
 			children = (
-				11A75293232BCAF60098C193 /* DataUpdaterService.swift */,
+				11A75293232BCAF60098C193 /* DataManagerService.swift */,
 			);
-			path = UpdateDataService;
+			path = DataManager;
 			sourceTree = "<group>";
 		};
 		11C2F1072326A15F003E1486 /* LocationService */ = {
@@ -314,7 +314,7 @@
 				1119F8D423192B3100FD739B /* WeatherViewCell.swift in Sources */,
 				116DBFFE230FD2E800354DF9 /* NetworkController.swift in Sources */,
 				115519272322423B00A24208 /* WeatherInfoTableViewController.swift in Sources */,
-				11A75294232BCAF60098C193 /* DataUpdaterService.swift in Sources */,
+				11A75294232BCAF60098C193 /* DataManagerService.swift in Sources */,
 				112A0F81232977D800F0DCFC /* WeatherDataFactory.swift in Sources */,
 				11A7528F232B87110098C193 /* DetailWeatherDataViewModel.swift in Sources */,
 				110684CC233A90D40042E95A /* WeatherDataModel+Data.swift in Sources */,
