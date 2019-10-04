@@ -97,6 +97,7 @@ class CitiesListViewController: UIViewController {
         if launchBefore {
             print("Updating in viewwillappear")
             self.updateWeather()
+            self.tableView.reloadData()
         } else {
             UserDefaults.standard.set(true, forKey: "launchBefore")
         }
